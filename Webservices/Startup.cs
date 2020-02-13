@@ -11,6 +11,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
+using Webservices.Models.DataManager;
+using Webservices.Models;
+using Webservices.Models.Repository;
 
 namespace Webservices
 {
@@ -27,7 +30,8 @@ namespace Webservices
         public void ConfigureServices(IServiceCollection services)
         {
             // Add framework services.  
-            services.AddDbContext<RepositoryContext>(opts => opts.UseSqlServer(Configuration["ConnectionString:ApplicationDB"]));            
+            services.AddDbContext<RepositoryContext>(opts => opts.UseSqlServer(Configuration["ConnectionString:ApplicationDB"]));
+            services.AddScoped<IDataRepository<Category>, CategoryManager>();
             services.AddControllers();
         }
 
