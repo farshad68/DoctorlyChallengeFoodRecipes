@@ -26,7 +26,7 @@ namespace Webservices.Controllers
             return Ok(categories);
         }
         // GET: api/Category/5
-        [HttpGet("{id}", Name = "Get")]
+        [HttpGet("{id}", Name = "GetCategory")]
         public IActionResult Get(long id)
         {
             Category category = _dataRepository.Get(id);

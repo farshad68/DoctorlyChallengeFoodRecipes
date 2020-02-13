@@ -12,6 +12,6 @@ namespace Webservices.Models
         public long ID { get; set; }
         public string Name { get; set; }
         public bool IsValid { get; set; }
-        public ICollection<RecipeIngredient> RecipeIngredients { get; set; }
+        public ICollection<RecipeIngredient> Recipes { get; set; }
     }
 }

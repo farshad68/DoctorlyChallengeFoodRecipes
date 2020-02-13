@@ -8,16 +8,13 @@ using System.Threading.Tasks;
 namespace Webservices.Models
 {
     public class RecipeIngredient
-    {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int ID { get; set; }
-        public int RecipeID { get; set; }
+    {        
+        public long RecipeID { get; set; }
         public Recipe Recipe { get; set; }
-        public int IngredientID { get; set; }
+        public long IngredientID { get; set; }
         public Ingredient Ingredient { get; set; }
         public float Quantity { get; set; }
-        public int UnitID { get; set; }
-        public Unit Unit { get; set; }
+        public long UnitID { get; set; }
+        public Unit Unit { get; set; }        
     }
 }

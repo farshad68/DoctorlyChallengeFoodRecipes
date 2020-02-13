@@ -22,5 +22,20 @@ namespace Webservices
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
         }
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            base.OnModelCreating(builder);
+
+            builder.Entity<RecipeIngredient>()
+                .HasKey(t => new { t.IngredientID, t.RecipeID });
+            builder.Entity<RecipeIngredient>()
+                .HasOne(T => T.Ingredient)
+                .WithMany(X => X.Recipes)
+                .HasForeignKey(Y => Y.IngredientID);
+            builder.Entity<RecipeIngredient>()
+                .HasOne(T => T.Recipe)
+                .WithMany(X => X.Ingredients)
+                .HasForeignKey(Y => Y.RecipeID);
+        }
     }
 }

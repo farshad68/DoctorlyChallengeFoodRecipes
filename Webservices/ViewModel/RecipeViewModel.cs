@@ -1,29 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
+using System.Threading.Tasks;
+using Webservices.Models;
 
-namespace Webservices.Models
+namespace Webservices.ViewModel
 {
-    public class Recipe
+    public class RecipeViewModel
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public long ID { get; set; }
         public Guid Token { get; set; }
-        public String Name { get; set; }
+        public string Name { get; set; }
         public string Description { get; set; }
         public string Direction { get; set; }
+        public string CountryName { get; set; }
         public long CountryID { get; set; }
-        public Country Country { get; set; }
         public int Year { get; set; }
         public long PreparationTime { get; set; }
         public int NumberOfServing { get; set; }
         public float CaloriesPerServing { get; set; }
-        public ICollection<RecipeIngredient> Ingredients { get; set; }
+        public List<IngredientViewModel> Ingredients { get; set; }
         public bool IsCompleted { get; set; }
+        public string CategoryName { get; set; }
         public long CategoryID { get; set; }
-        public Category Category { get; set; }
-
     }
 }

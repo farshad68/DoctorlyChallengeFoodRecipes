@@ -16,21 +16,7 @@ namespace Webservices.Test
 {
     public class CategoryEndPoinTest
     {
-        private DbContextOptions MockDBwith3Member()
-        {
-            var options = new DbContextOptionsBuilder<RepositoryContext>()
-            .UseInMemoryDatabase(databaseName: "CategoryLisDatabase"+Guid.NewGuid().ToString())
-            .Options;
-
-            using (var context = new RepositoryContext(options))
-            {
-                context.Category.Add(new Category { IsValid = true, Name = "cat1" });
-                context.Category.Add(new Category { IsValid = true, Name = "cat2" });
-                context.Category.Add(new Category { IsValid = true, Name = "cat3" });
-                context.SaveChanges();
-            }
-            return options;
-        }
+         
         [Fact]
         public void Add_ValidObjectPassed_ReturnedResponseHasCreatedItem()
         {
@@ -72,7 +58,8 @@ namespace Webservices.Test
         public void Add_ValidObject_Then_Get_Should_bring_Something()
         {
             // Arrange
-            DbContextOptions options = MockDBwith3Member();
+           
+            DbContextOptions options=new MockDBHandler().CategoryWithThreeMember().build();
 
             using (var context = new RepositoryContext(options))
             {
@@ -92,8 +79,7 @@ namespace Webservices.Test
         public void After_Edit_ValidObject_Get_Should_Changed()
         {
             // Arrange
-            DbContextOptions options = MockDBwith3Member();
-
+            DbContextOptions options = new MockDBHandler().CategoryWithThreeMember().build();
             using (var context = new RepositoryContext(options))
             {
                 IDataRepository<Category> mockRepository = new CategoryManager(context);
@@ -172,7 +158,7 @@ namespace Webservices.Test
         public void Delete_ShouldWork()
         {
             // Arrange
-            DbContextOptions options = MockDBwith3Member();
+            DbContextOptions options = new MockDBHandler().CategoryWithThreeMember().build();
 
             using (var context = new RepositoryContext(options))
             {

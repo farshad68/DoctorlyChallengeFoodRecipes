@@ -14,6 +14,7 @@ using Microsoft.EntityFrameworkCore;
 using Webservices.Models.DataManager;
 using Webservices.Models;
 using Webservices.Models.Repository;
+using AutoMapper;
 
 namespace Webservices
 {
@@ -29,9 +30,20 @@ namespace Webservices
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            // Auto Mapper Configurations
+            var mappingConfig = new MapperConfiguration(mc =>
+            {
+                mc.AddProfile(new MappingProfile());
+            });
+
             // Add framework services.  
             services.AddDbContext<RepositoryContext>(opts => opts.UseSqlServer(Configuration["ConnectionString:ApplicationDB"]));
             services.AddScoped<IDataRepository<Category>, CategoryManager>();
+            services.AddScoped<IDataRepository<Recipe>, RecipeManager>();
+
+
+            IMapper mapper = mappingConfig.CreateMapper();
+            services.AddSingleton(mapper);
             services.AddControllers();
         }
 

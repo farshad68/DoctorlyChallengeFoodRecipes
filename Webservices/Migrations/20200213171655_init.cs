@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Webservices.Migrations
 {
-    public partial class InitialMigration : Migration
+    public partial class init : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -75,14 +75,22 @@ namespace Webservices.Migrations
                     Direction = table.Column<string>(nullable: true),
                     CountryID = table.Column<long>(nullable: false),
                     Year = table.Column<int>(nullable: false),
-                    PreparationTime = table.Column<TimeSpan>(nullable: false),
+                    PreparationTime = table.Column<long>(nullable: false),
                     NumberOfServing = table.Column<int>(nullable: false),
                     CaloriesPerServing = table.Column<float>(nullable: false),
-                    IsCompleted = table.Column<bool>(nullable: false)
+                    IsCompleted = table.Column<bool>(nullable: false),
+                    CategoryID = table.Column<int>(nullable: false),
+                    CategoryID1 = table.Column<long>(nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Recipe", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_Recipe_Category_CategoryID1",
+                        column: x => x.CategoryID1,
+                        principalTable: "Category",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Recipe_Country_CountryID",
                         column: x => x.CountryID,
@@ -95,38 +103,38 @@ namespace Webservices.Migrations
                 name: "RecipeIngredient",
                 columns: table => new
                 {
-                    ID = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    RecipeID = table.Column<int>(nullable: false),
-                    RecipeID1 = table.Column<long>(nullable: true),
-                    IngredientID = table.Column<int>(nullable: false),
-                    IngredientID1 = table.Column<long>(nullable: true),
+                    RecipeID = table.Column<long>(nullable: false),
+                    IngredientID = table.Column<long>(nullable: false),
                     Quantity = table.Column<float>(nullable: false),
-                    UnitID = table.Column<int>(nullable: false),
-                    UnitID1 = table.Column<long>(nullable: true)
+                    UnitID = table.Column<long>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_RecipeIngredient", x => x.ID);
+                    table.PrimaryKey("PK_RecipeIngredient", x => new { x.IngredientID, x.RecipeID });
                     table.ForeignKey(
-                        name: "FK_RecipeIngredient_Ingredient_IngredientID1",
-                        column: x => x.IngredientID1,
+                        name: "FK_RecipeIngredient_Ingredient_IngredientID",
+                        column: x => x.IngredientID,
                         principalTable: "Ingredient",
                         principalColumn: "ID",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_RecipeIngredient_Recipe_RecipeID1",
-                        column: x => x.RecipeID1,
+                        name: "FK_RecipeIngredient_Recipe_RecipeID",
+                        column: x => x.RecipeID,
                         principalTable: "Recipe",
                         principalColumn: "ID",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_RecipeIngredient_Unit_UnitID1",
-                        column: x => x.UnitID1,
+                        name: "FK_RecipeIngredient_Unit_UnitID",
+                        column: x => x.UnitID,
                         principalTable: "Unit",
                         principalColumn: "ID",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Recipe_CategoryID1",
+                table: "Recipe",
+                column: "CategoryID1");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Recipe_CountryID",
@@ -134,26 +142,18 @@ namespace Webservices.Migrations
                 column: "CountryID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_RecipeIngredient_IngredientID1",
+                name: "IX_RecipeIngredient_RecipeID",
                 table: "RecipeIngredient",
-                column: "IngredientID1");
+                column: "RecipeID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_RecipeIngredient_RecipeID1",
+                name: "IX_RecipeIngredient_UnitID",
                 table: "RecipeIngredient",
-                column: "RecipeID1");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_RecipeIngredient_UnitID1",
-                table: "RecipeIngredient",
-                column: "UnitID1");
+                column: "UnitID");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "Category");
-
             migrationBuilder.DropTable(
                 name: "RecipeIngredient");
 
@@ -165,6 +165,9 @@ namespace Webservices.Migrations
 
             migrationBuilder.DropTable(
                 name: "Unit");
+
+            migrationBuilder.DropTable(
+                name: "Category");
 
             migrationBuilder.DropTable(
                 name: "Country");

@@ -83,6 +83,12 @@ namespace Webservices.Migrations
                     b.Property<float>("CaloriesPerServing")
                         .HasColumnType("real");
 
+                    b.Property<int>("CategoryID")
+                        .HasColumnType("int");
+
+                    b.Property<long?>("CategoryID1")
+                        .HasColumnType("bigint");
+
                     b.Property<long>("CountryID")
                         .HasColumnType("bigint");
 
@@ -101,8 +107,8 @@ namespace Webservices.Migrations
                     b.Property<int>("NumberOfServing")
                         .HasColumnType("int");
 
-                    b.Property<TimeSpan>("PreparationTime")
-                        .HasColumnType("time");
+                    b.Property<long>("PreparationTime")
+                        .HasColumnType("bigint");
 
                     b.Property<Guid>("Token")
                         .HasColumnType("uniqueidentifier");
@@ -112,6 +118,8 @@ namespace Webservices.Migrations
 
                     b.HasKey("ID");
 
+                    b.HasIndex("CategoryID1");
+
                     b.HasIndex("CountryID");
 
                     b.ToTable("Recipe");
@@ -119,39 +127,23 @@ namespace Webservices.Migrations
 
             modelBuilder.Entity("Webservices.Models.RecipeIngredient", b =>
                 {
-                    b.Property<int>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                    b.Property<long>("IngredientID")
+                        .HasColumnType("bigint");
 
-                    b.Property<int>("IngredientID")
-                        .HasColumnType("int");
-
-                    b.Property<long?>("IngredientID1")
+                    b.Property<long>("RecipeID")
                         .HasColumnType("bigint");
 
                     b.Property<float>("Quantity")
                         .HasColumnType("real");
 
-                    b.Property<int>("RecipeID")
-                        .HasColumnType("int");
-
-                    b.Property<long?>("RecipeID1")
+                    b.Property<long>("UnitID")
                         .HasColumnType("bigint");
 
-                    b.Property<int>("UnitID")
-                        .HasColumnType("int");
+                    b.HasKey("IngredientID", "RecipeID");
 
-                    b.Property<long?>("UnitID1")
-                        .HasColumnType("bigint");
+                    b.HasIndex("RecipeID");
 
-                    b.HasKey("ID");
-
-                    b.HasIndex("IngredientID1");
-
-                    b.HasIndex("RecipeID1");
-
-                    b.HasIndex("UnitID1");
+                    b.HasIndex("UnitID");
 
                     b.ToTable("RecipeIngredient");
                 });
@@ -176,8 +168,12 @@ namespace Webservices.Migrations
 
             modelBuilder.Entity("Webservices.Models.Recipe", b =>
                 {
+                    b.HasOne("Webservices.Models.Category", "Category")
+                        .WithMany("Recipes")
+                        .HasForeignKey("CategoryID1");
+
                     b.HasOne("Webservices.Models.Country", "Country")
-                        .WithMany()
+                        .WithMany("Recipes")
                         .HasForeignKey("CountryID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -186,16 +182,22 @@ namespace Webservices.Migrations
             modelBuilder.Entity("Webservices.Models.RecipeIngredient", b =>
                 {
                     b.HasOne("Webservices.Models.Ingredient", "Ingredient")
-                        .WithMany("RecipeIngredients")
-                        .HasForeignKey("IngredientID1");
+                        .WithMany("Recipes")
+                        .HasForeignKey("IngredientID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("Webservices.Models.Recipe", "Recipe")
-                        .WithMany("RecipeIngredients")
-                        .HasForeignKey("RecipeID1");
+                        .WithMany("Ingredients")
+                        .HasForeignKey("RecipeID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("Webservices.Models.Unit", "Unit")
-                        .WithMany()
-                        .HasForeignKey("UnitID1");
+                        .WithMany("RecipeIngredients")
+                        .HasForeignKey("UnitID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }
