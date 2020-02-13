@@ -15,6 +15,7 @@ using Webservices.Models.DataManager;
 using Webservices.Models;
 using Webservices.Models.Repository;
 using AutoMapper;
+using Webservices.Mapper;
 
 namespace Webservices
 {
@@ -39,8 +40,21 @@ namespace Webservices
             // Add framework services.  
             services.AddDbContext<RepositoryContext>(opts => opts.UseSqlServer(Configuration["ConnectionString:ApplicationDB"]));
             services.AddScoped<IDataRepository<Category>, CategoryManager>();
-            services.AddScoped<IDataRepository<Recipe>, RecipeManager>();
-
+            services.AddScoped<IDataRepository<Country>, CountryManager>();
+            services.AddScoped<IDataRepository<Ingredient>, IngredientManager>();
+            services.AddScoped<IDataRepository<Recipe>, RecipeManager>();            
+            services.AddScoped<IDataRepository<Unit>, UnitManager>();
+            services.AddScoped<ICustomMapper, CustomMapper>();
+            services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAllHeaders",
+                      builder =>
+                      {
+                          builder.AllowAnyOrigin()
+                                 .AllowAnyHeader()
+                                 .AllowAnyMethod();
+                      });
+            });
 
             IMapper mapper = mappingConfig.CreateMapper();
             services.AddSingleton(mapper);
@@ -60,7 +74,7 @@ namespace Webservices
             app.UseRouting();
 
             app.UseAuthorization();
-
+            app.UseCors("AllowAllHeaders");
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();

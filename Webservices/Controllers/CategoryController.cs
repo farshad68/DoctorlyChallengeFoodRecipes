@@ -50,7 +50,7 @@ namespace Webservices.Controllers
 
             _dataRepository.Add(category);
             return CreatedAtRoute(
-                  "Get",
+                  "GetCategory",
                   new { Id = category.ID },
                   category);
         }

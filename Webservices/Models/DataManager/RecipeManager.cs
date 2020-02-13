@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
 using Webservices.Models.Repository;
 
@@ -27,13 +28,23 @@ namespace Webservices.Models.DataManager
 
         public Recipe Get(long id)
         {
-            return _repositoryContext.Recipe
+            var returnvalue = _repositoryContext.Recipe
                  .FirstOrDefault(e => e.ID == id);
+
+            returnvalue.Ingredients = _repositoryContext.RecipeIngredient.Include(x => x.Ingredient).Include(y => y.Unit).Where(T => T.RecipeID == id).ToList();
+            
+            return returnvalue;
         }
 
         public IEnumerable<Recipe> GetAll()
-        {
-            return _repositoryContext.Recipe.ToList();
+        {            
+            var returnlist = _repositoryContext.Recipe.ToList();
+            
+            foreach (var item in returnlist)
+            {
+                item.Ingredients = _repositoryContext.RecipeIngredient.Include(x => x.Ingredient).Include(y => y.Unit).Where(T => T.RecipeID == item.ID).ToList();
+            }
+            return returnlist;
         }
 
         public void Update(Recipe dbEntity, Recipe entity)

@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Webservices.Mapper;
 using Webservices.Models;
 using Webservices.Models.Repository;
 using Webservices.ViewModel;
@@ -18,19 +19,26 @@ namespace Webservices.Controllers
         
         private readonly IMapper _mapper;
         private readonly IDataRepository<Recipe> _dataRepository;
-        public RecipeController(IDataRepository<Recipe> dataRepository, IMapper mapper)
+        private readonly ICustomMapper _custumMapper;
+        public RecipeController(IDataRepository<Recipe> dataRepository, IMapper mapper, ICustomMapper custumMapper)
         {
             _dataRepository = dataRepository;
             _mapper = mapper;
+            _custumMapper = custumMapper;
         }
         // GET: api/Recipe
         [HttpGet]
         public IActionResult Get()
         {
             IEnumerable<Recipe> recipe = _dataRepository.GetAll();
-            
-            IEnumerable<RecipeViewModel> icollectionDest = _mapper.Map<IEnumerable<Recipe>, IEnumerable<RecipeViewModel>>(recipe);
-            return Ok(icollectionDest);
+            List<RecipeViewModel> recipDes = new List<RecipeViewModel>();
+
+            foreach(var item in recipe)
+            {
+                recipDes.Add(_custumMapper.Map(item));
+            }
+                        
+            return Ok(recipDes);
         }
         // GET: api/Recipe/5
         [HttpGet("{id}", Name = "GetRecipe")]
@@ -42,8 +50,8 @@ namespace Webservices.Controllers
             {
                 return NotFound("The recipe record couldn't be found.");
             }
-
-            return Ok(recipe);
+            var recipDes = _custumMapper.Map(recipe);
+            return Ok(recipDes);
         }
 
         // POST: api/recipe
@@ -71,10 +79,15 @@ namespace Webservices.Controllers
             {
                 return BadRequest("recipe is null.");
             }
-            Recipe recipeDest = _mapper.Map<RecipeViewModel, Recipe  >(recipe);
+            recipe.Token = Guid.NewGuid();
+            Recipe recipeDest = _custumMapper.Map(recipe);
+            //Recipe recipeDest = _mapper.Map<RecipeViewModel, Recipe  >(recipe);
+            
+            
             _dataRepository.Add(recipeDest);
+            recipe.ID = recipeDest.ID;
             return CreatedAtRoute(
-                  "Get",
+                  "GetRecipe",
                   new { Id = recipe.ID },
                   recipe);
         }

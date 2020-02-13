@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Webservices.Controllers;
+using Webservices.Mapper;
 using Webservices.Models;
 using Webservices.Models.DataManager;
 using Webservices.Models.Repository;
@@ -16,9 +17,11 @@ namespace Webservices.Test
     public class RecipeEndPointTest
     {
         private readonly IMapper _mapper;
-        public RecipeEndPointTest(IMapper mapper)
+        private readonly ICustomMapper _customMapper;
+        public RecipeEndPointTest(IMapper mapper,ICustomMapper customMapper)
         {
             _mapper = mapper;
+            _customMapper = customMapper;
         }
 
         [Fact]
@@ -32,7 +35,7 @@ namespace Webservices.Test
             {
                 IDataRepository<Recipe> mockRepository = new RecipeManager(context);
                  
-                RecipeController recipecontroller = new RecipeController(mockRepository,_mapper);
+                RecipeController recipecontroller = new RecipeController(mockRepository,_mapper,_customMapper);
                 //Act
                 var okResult = recipecontroller.Get() as OkObjectResult;
 
