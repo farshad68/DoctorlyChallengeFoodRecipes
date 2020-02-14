@@ -9,7 +9,7 @@ namespace Webservices.Test
         IMockDBHandler CategoryWithThreeMember();
         IMockDBHandler CountryWithThreeMember();
         IMockDBHandler IngredientWithThreeMember();
-        Task<IMockDBHandler> ReciptWithThreeMemberAsync();
+        IMockDBHandler ReciptWithThreeMember();
         IMockDBHandler UnitWithThreeMember();
     }
 }

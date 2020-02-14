@@ -30,7 +30,7 @@ namespace Webservices.Models.DataManager
         {
             var returnvalue = _repositoryContext.Recipe
                  .FirstOrDefault(e => e.ID == id);
-
+            if(returnvalue!=null)
             returnvalue.Ingredients = _repositoryContext.RecipeIngredient.Include(x => x.Ingredient).Include(y => y.Unit).Where(T => T.RecipeID == id).ToList();
             
             return returnvalue;

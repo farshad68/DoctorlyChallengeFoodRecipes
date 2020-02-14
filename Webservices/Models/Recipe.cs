@@ -11,7 +11,7 @@ namespace Webservices.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public long ID { get; set; }
         public Guid Token { get; set; }
-        public String Name { get; set; }
+        public string Name { get; set; }
         public string Description { get; set; }
         public string Direction { get; set; }
         public long CountryID { get; set; }
@@ -25,5 +25,24 @@ namespace Webservices.Models
         public long CategoryID { get; set; }
         public Category Category { get; set; }
 
+        public override bool Equals(object value)
+        {
+            Recipe secondRecipe = value as Recipe;
+
+            return (secondRecipe != null)
+                && (ID == secondRecipe.ID)
+                && (Token == secondRecipe.Token)
+                && (Name == secondRecipe.Name)
+                && (Description == secondRecipe.Description)
+                && (Direction == secondRecipe.Direction)
+                && (CountryID == secondRecipe.CountryID)
+                && (Year == secondRecipe.Year)
+                && (PreparationTime == secondRecipe.PreparationTime)
+                && (NumberOfServing == secondRecipe.NumberOfServing)
+                && (CaloriesPerServing == secondRecipe.CaloriesPerServing)
+                && (IsCompleted == secondRecipe.IsCompleted)
+                && (CategoryID == secondRecipe.CategoryID)
+                && (Ingredients.Count == secondRecipe.Ingredients.Count);
+        }
     }
 }

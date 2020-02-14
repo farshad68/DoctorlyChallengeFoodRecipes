@@ -24,7 +24,7 @@ namespace Webservices.Mapper
             r.Token = rvm.Token;
             r.Year = rvm.Year;
             r.Direction = rvm.Direction;
-            r.Description = rvm.Direction;
+            r.Description = rvm.Description;
             r.CountryID = rvm.CountryID;
             r.CategoryID = rvm.CategoryID;
             r.CaloriesPerServing = rvm.CaloriesPerServing;
@@ -64,7 +64,7 @@ namespace Webservices.Mapper
             rvm.Token = r.Token;
             rvm.Year = r.Year;
             rvm.Direction = r.Direction;
-            rvm.Description = r.Direction;
+            rvm.Description = r.Description;
             rvm.CountryID = r.CountryID;
             rvm.CategoryID = r.CategoryID;
             rvm.CaloriesPerServing = r.CaloriesPerServing;

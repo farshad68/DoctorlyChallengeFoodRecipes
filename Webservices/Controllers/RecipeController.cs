@@ -55,25 +55,25 @@ namespace Webservices.Controllers
         }
 
         // POST: api/recipe
-        [HttpPost]
-        public IActionResult Post([FromBody] Recipe recipe)
-        {
-            if (recipe == null)
-            {
-                return BadRequest("recipe is null.");
-            }
+        //[HttpPost]
+        //public IActionResult Post([FromBody] Recipe recipe)
+        //{
+        //    if (recipe == null)
+        //    {
+        //        return BadRequest("recipe is null.");
+        //    }
 
-            _dataRepository.Add(recipe);
-            return CreatedAtRoute(
-                  "Get",
-                  new { Id = recipe.ID },
-                  recipe);
-        }
+        //    _dataRepository.Add(recipe);
+        //    return CreatedAtRoute(
+        //          "Get",
+        //          new { Id = recipe.ID },
+        //          recipe);
+        //}
 
         // POST: api/recipe
         [HttpPost]
-        [Route("addRecipeSimple")]
-        public IActionResult PostAddSimpleRecipe([FromBody] RecipeViewModel recipe)
+        //[Route("addRecipeSimple")]
+        public IActionResult Post([FromBody] RecipeViewModel recipe)
         {
             if (recipe == null)
             {
@@ -93,9 +93,9 @@ namespace Webservices.Controllers
         }
         // PUT: api/Recipe/5
         [HttpPut("{id}")]
-        public IActionResult Put(long id, [FromBody] Recipe recipe)
+        public IActionResult Put(long id, [FromBody] RecipeViewModel recipeVM)
         {
-            if (recipe == null)
+            if (recipeVM == null)
             {
                 return BadRequest("Recipe is null.");
             }
@@ -105,7 +105,7 @@ namespace Webservices.Controllers
             {
                 return NotFound("The Recipe record couldn't be found.");
             }
-
+            Recipe recipe = _custumMapper.Map(recipeVM);
             _dataRepository.Update(recipeToUpdate, recipe);
             return NoContent();
         }
