@@ -16,6 +16,8 @@ using Webservices.Models;
 using Webservices.Models.Repository;
 using AutoMapper;
 using Webservices.Mapper;
+using System.Reflection;
+using System.IO;
 
 namespace Webservices
 {
@@ -55,6 +57,16 @@ namespace Webservices
                                  .AllowAnyMethod();
                       });
             });
+            var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+            var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+            services.AddSwaggerGen(c => {
+                c.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
+                {
+                    Version = "v1"
+                });
+                
+                c.IncludeXmlComments(xmlPath);
+            }) ;
 
             IMapper mapper = mappingConfig.CreateMapper();
             services.AddSingleton(mapper);
@@ -78,6 +90,11 @@ namespace Webservices
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+            });
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Test API V1");
             });
         }
     }

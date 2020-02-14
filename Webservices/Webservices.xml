@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Webservices</name>
+    </assembly>
+    <members>
+        <member name="M:Webservices.Controllers.CategoryController.Get">
+            <summary>
+            Get API Value
+            </summary>
+            <remarks>This API will get the Categories.</remarks>
+        </member>
+    </members>
+</doc>

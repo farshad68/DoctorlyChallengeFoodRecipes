@@ -19,6 +19,10 @@ namespace Webservices.Controllers
             _dataRepository = dataRepository;
         }
         // GET: api/Category
+        /// <summary>
+        /// Get API Value
+        /// </summary>
+        /// <remarks>This API will get the Categories.</remarks>
         [HttpGet]
         public IActionResult Get()
         {
