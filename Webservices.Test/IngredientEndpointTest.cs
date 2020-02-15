@@ -58,7 +58,7 @@ namespace Webservices.Test
         {
             // Arrange
 
-            DbContextOptions options = new MockDBHandler().IngredientWithThreeMember().build();
+            DbContextOptions<RepositoryContext> options = new MockDBHandler().IngredientWithThreeMember().build();
 
             using (var context = new RepositoryContext(options))
             {
@@ -78,7 +78,7 @@ namespace Webservices.Test
         public void After_Edit_ValidObject_Get_Should_Changed()
         {
             // Arrange
-            DbContextOptions options = new MockDBHandler().IngredientWithThreeMember().build();
+            DbContextOptions<RepositoryContext> options = new MockDBHandler().IngredientWithThreeMember().build();
             using (var context = new RepositoryContext(options))
             {
                 IDataRepository<Ingredient> mockRepository = new IngredientManager(context);
@@ -157,7 +157,7 @@ namespace Webservices.Test
         public void Delete_ShouldWork()
         {
             // Arrange
-            DbContextOptions options = new MockDBHandler().IngredientWithThreeMember().build();
+            DbContextOptions<RepositoryContext> options = new MockDBHandler().IngredientWithThreeMember().build();
 
             using (var context = new RepositoryContext(options))
             {

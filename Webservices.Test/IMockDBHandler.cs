@@ -5,7 +5,7 @@ namespace Webservices.Test
 {
     public interface IMockDBHandler
     {
-        DbContextOptions build();
+        DbContextOptions<RepositoryContext> build();
         IMockDBHandler CategoryWithThreeMember();
         IMockDBHandler CountryWithThreeMember();
         IMockDBHandler IngredientWithThreeMember();

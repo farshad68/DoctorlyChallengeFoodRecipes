@@ -9,7 +9,7 @@ namespace Webservices.Test
 {
     public class MockDBHandler : IMockDBHandler
     {
-        private DbContextOptions _options;
+        private DbContextOptions<RepositoryContext> _options;
         private string _dbName;
         public MockDBHandler()
         {
@@ -17,6 +17,13 @@ namespace Webservices.Test
             _options = new DbContextOptionsBuilder<RepositoryContext>()
             .UseInMemoryDatabase(databaseName: _dbName)
             .Options;
+        }
+        public IMockDBHandler EmptyDB()
+        {
+            _options = new DbContextOptionsBuilder<RepositoryContext>()
+            .UseInMemoryDatabase(databaseName: _dbName)
+            .Options;
+            return this;
         }
         public IMockDBHandler CategoryWithThreeMember()
         {
@@ -101,7 +108,7 @@ namespace Webservices.Test
             }
             return this;
         }
-        public DbContextOptions build()
+        public DbContextOptions<RepositoryContext> build()
         {
             return _options;
         }

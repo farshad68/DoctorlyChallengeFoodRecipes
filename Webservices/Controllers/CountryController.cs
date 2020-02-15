@@ -2,15 +2,17 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Webservices.Models;
 using Webservices.Models.Repository;
 
 namespace Webservices.Controllers
-{
+{    
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(AuthenticationSchemes = "Bearer")]
     public class CountryController : ControllerBase
     {
         private readonly IDataRepository<Country> _dataRepository;
@@ -19,6 +21,7 @@ namespace Webservices.Controllers
             _dataRepository = dataRepository;
         }
         // GET: api/Country
+        
         [HttpGet]
         public IActionResult Get()
         {

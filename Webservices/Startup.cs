@@ -18,6 +18,11 @@ using AutoMapper;
 using Webservices.Mapper;
 using System.Reflection;
 using System.IO;
+using Microsoft.AspNetCore.Identity;
+using Webservices.Data;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace Webservices
 {
@@ -71,6 +76,37 @@ namespace Webservices
             IMapper mapper = mappingConfig.CreateMapper();
             services.AddSingleton(mapper);
             services.AddControllers();
+
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+               // options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            //.AddJwtBearer(options =>
+            //{
+            //    options.Authority = "http://doctorly.de";
+            //    options.Audience = "http://doctorly.de";
+            //});                
+            .AddJwtBearer(options =>
+            {
+                options.SaveToken = true;
+                options.RequireHttpsMetadata = false;
+                options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters()
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidAudience = "http://doctorly.de",
+                    ValidIssuer = "http://doctorly.de",
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("ThisISaLongandSecureSecureKeyDoYouBeliveThat"))
+                };
+            });
+
+
+
+                services.AddIdentity<ApplicationUser, IdentityRole>()
+                .AddEntityFrameworkStores<RepositoryContext>()
+                .AddDefaultTokenProviders();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -80,11 +116,11 @@ namespace Webservices
             {
                 app.UseDeveloperExceptionPage();
             }
-
+            SeedDB.Initialize(app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope().ServiceProvider);
             app.UseHttpsRedirection();
 
             app.UseRouting();
-
+            app.UseAuthentication();
             app.UseAuthorization();
             app.UseCors("AllowAllHeaders");
             app.UseEndpoints(endpoints =>

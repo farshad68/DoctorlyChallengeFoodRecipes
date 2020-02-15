@@ -20,7 +20,7 @@ namespace Webservices.Test
         [Fact]
         public void Test_map_From_recipe_To_recipeVieModel()
         {
-            DbContextOptions options = new MockDBHandler().CategoryWithThreeMember().CountryWithThreeMember().UnitWithThreeMember().IngredientWithThreeMember().ReciptWithThreeMember().build();
+            DbContextOptions<RepositoryContext> options = new MockDBHandler().CategoryWithThreeMember().CountryWithThreeMember().UnitWithThreeMember().IngredientWithThreeMember().ReciptWithThreeMember().build();
 
             using (var context = new RepositoryContext(options))
             {
@@ -43,7 +43,7 @@ namespace Webservices.Test
         public void Test_map_From_recipeVieModel_To_recipe()
         {
             RecipeViewModel acctual =new MockDBHandler().buildMockRecipeView();
-            DbContextOptions options = new MockDBHandler().CategoryWithThreeMember().CountryWithThreeMember().UnitWithThreeMember().IngredientWithThreeMember().ReciptWithThreeMember().build();
+            DbContextOptions<RepositoryContext> options = new MockDBHandler().CategoryWithThreeMember().CountryWithThreeMember().UnitWithThreeMember().IngredientWithThreeMember().ReciptWithThreeMember().build();
 
             using (var context = new RepositoryContext(options))
             {

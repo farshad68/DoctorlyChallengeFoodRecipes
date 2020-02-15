@@ -9,11 +9,13 @@ using Webservices.Mapper;
 using Webservices.Models;
 using Webservices.Models.Repository;
 using Webservices.ViewModel;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Webservices.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(AuthenticationSchemes = "Bearer")]
     public class RecipeController : ControllerBase
     {
         

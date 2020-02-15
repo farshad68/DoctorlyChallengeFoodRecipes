@@ -36,7 +36,7 @@ namespace Webservices.Test
         public void Add_ValidObjectPassed_ReturnedResponseHasCreatedItem()
         {
             // Arrange
-            DbContextOptions options = new MockDBHandler().CategoryWithThreeMember().CountryWithThreeMember().UnitWithThreeMember().IngredientWithThreeMember().ReciptWithThreeMember().build();            
+            DbContextOptions<RepositoryContext> options = new MockDBHandler().CategoryWithThreeMember().CountryWithThreeMember().UnitWithThreeMember().IngredientWithThreeMember().ReciptWithThreeMember().build();            
             using (var context = new RepositoryContext(options))
             {
                 ICustomMapper _customMapper = new CustomMapper(context);
@@ -60,7 +60,7 @@ namespace Webservices.Test
         [Fact]
         public void Get_WhenCalled_ReturnsOkResult()
         {
-            DbContextOptions options = new MockDBHandler().CategoryWithThreeMember().CountryWithThreeMember().UnitWithThreeMember().IngredientWithThreeMember().ReciptWithThreeMember().build();
+            DbContextOptions<RepositoryContext> options = new MockDBHandler().CategoryWithThreeMember().CountryWithThreeMember().UnitWithThreeMember().IngredientWithThreeMember().ReciptWithThreeMember().build();
             using (var context = new RepositoryContext(options))
             {
                 ICustomMapper _customMapper = new CustomMapper(context);
@@ -78,7 +78,7 @@ namespace Webservices.Test
         public void Add_ValidObject_Then_Get_Should_bring_Something()
         {
             // Arrange
-            DbContextOptions options = new MockDBHandler().CategoryWithThreeMember().CountryWithThreeMember().UnitWithThreeMember().IngredientWithThreeMember().ReciptWithThreeMember().build();
+            DbContextOptions<RepositoryContext> options = new MockDBHandler().CategoryWithThreeMember().CountryWithThreeMember().UnitWithThreeMember().IngredientWithThreeMember().ReciptWithThreeMember().build();
             using (var context = new RepositoryContext(options))
             {
                 ICustomMapper _customMapper = new CustomMapper(context);
@@ -101,7 +101,7 @@ namespace Webservices.Test
         public void After_Edit_ValidObject_Get_Should_Changed()
         {
             // Arrange
-            DbContextOptions options = new MockDBHandler().CategoryWithThreeMember().CountryWithThreeMember().UnitWithThreeMember().IngredientWithThreeMember().ReciptWithThreeMember().build();
+            DbContextOptions<RepositoryContext> options = new MockDBHandler().CategoryWithThreeMember().CountryWithThreeMember().UnitWithThreeMember().IngredientWithThreeMember().ReciptWithThreeMember().build();
             using (var context = new RepositoryContext(options))
             {
                 ICustomMapper _customMapper = new CustomMapper(context);
@@ -130,7 +130,7 @@ namespace Webservices.Test
         public void Put_Invalid_ID_Should_ReturnsNotFoundResult()
         {
             // Arrange
-            DbContextOptions options = new MockDBHandler().CategoryWithThreeMember().CountryWithThreeMember().UnitWithThreeMember().IngredientWithThreeMember().ReciptWithThreeMember().build();
+            DbContextOptions<RepositoryContext> options = new MockDBHandler().CategoryWithThreeMember().CountryWithThreeMember().UnitWithThreeMember().IngredientWithThreeMember().ReciptWithThreeMember().build();
             using (var context = new RepositoryContext(options))
             {
                 ICustomMapper _customMapper = new CustomMapper(context);
@@ -153,7 +153,7 @@ namespace Webservices.Test
         public void Put_Null_Should_ReturnsBadRequest()
         {
             // Arrange
-            DbContextOptions options = new MockDBHandler().CategoryWithThreeMember().CountryWithThreeMember().UnitWithThreeMember().IngredientWithThreeMember().ReciptWithThreeMember().build();
+            DbContextOptions<RepositoryContext> options = new MockDBHandler().CategoryWithThreeMember().CountryWithThreeMember().UnitWithThreeMember().IngredientWithThreeMember().ReciptWithThreeMember().build();
             using (var context = new RepositoryContext(options))
             {
                 ICustomMapper _customMapper = new CustomMapper(context);
@@ -176,7 +176,7 @@ namespace Webservices.Test
         public void GetById_UnknownintPassed_ReturnsNotFoundResult()
         {
             // Arrange
-            DbContextOptions options = new MockDBHandler().CategoryWithThreeMember().CountryWithThreeMember().UnitWithThreeMember().IngredientWithThreeMember().ReciptWithThreeMember().build();
+            DbContextOptions<RepositoryContext> options = new MockDBHandler().CategoryWithThreeMember().CountryWithThreeMember().UnitWithThreeMember().IngredientWithThreeMember().ReciptWithThreeMember().build();
             using (var context = new RepositoryContext(options))
             {
                 ICustomMapper _customMapper = new CustomMapper(context);
@@ -195,7 +195,7 @@ namespace Webservices.Test
         public void Delete_InvalidID_ReturnsNotFoundResult()
         {
             // Arrange
-            DbContextOptions options = new MockDBHandler().CategoryWithThreeMember().CountryWithThreeMember().UnitWithThreeMember().IngredientWithThreeMember().ReciptWithThreeMember().build();
+            DbContextOptions<RepositoryContext> options = new MockDBHandler().CategoryWithThreeMember().CountryWithThreeMember().UnitWithThreeMember().IngredientWithThreeMember().ReciptWithThreeMember().build();
             using (var context = new RepositoryContext(options))
             {
                 ICustomMapper _customMapper = new CustomMapper(context);
@@ -215,7 +215,7 @@ namespace Webservices.Test
         public void Delete_ShouldWork()
         {
             // Arrange
-            DbContextOptions options = new MockDBHandler().CategoryWithThreeMember().CountryWithThreeMember().UnitWithThreeMember().IngredientWithThreeMember().ReciptWithThreeMember().build();
+            DbContextOptions<RepositoryContext> options = new MockDBHandler().CategoryWithThreeMember().CountryWithThreeMember().UnitWithThreeMember().IngredientWithThreeMember().ReciptWithThreeMember().build();
             using (var context = new RepositoryContext(options))
             {
                 ICustomMapper _customMapper = new CustomMapper(context);

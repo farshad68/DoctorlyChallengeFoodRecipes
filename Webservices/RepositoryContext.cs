@@ -1,18 +1,24 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Webservices.Data;
 using Webservices.Models;
 
 namespace Webservices
 {
-    public class RepositoryContext : DbContext
+    public class RepositoryContext : IdentityDbContext<ApplicationUser>
     {
-        public RepositoryContext(DbContextOptions options)
-            : base(options)
+
+        public RepositoryContext(DbContextOptions<RepositoryContext> options) : base(options)
         {
+
         }
+
+
+
         public DbSet<Category> Category { get; set; }
         public DbSet<Country> Country { get; set; }
         public DbSet<Ingredient> Ingredient { get; set; }

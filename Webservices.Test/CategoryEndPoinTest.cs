@@ -58,8 +58,8 @@ namespace Webservices.Test
         public void Add_ValidObject_Then_Get_Should_bring_Something()
         {
             // Arrange
-           
-            DbContextOptions options=new MockDBHandler().CategoryWithThreeMember().build();
+
+            DbContextOptions<RepositoryContext> options =new MockDBHandler().CategoryWithThreeMember().build();
 
             using (var context = new RepositoryContext(options))
             {
@@ -79,7 +79,7 @@ namespace Webservices.Test
         public void After_Edit_ValidObject_Get_Should_Changed()
         {
             // Arrange
-            DbContextOptions options = new MockDBHandler().CategoryWithThreeMember().build();
+            DbContextOptions<RepositoryContext> options = new MockDBHandler().CategoryWithThreeMember().build();
             using (var context = new RepositoryContext(options))
             {
                 IDataRepository<Category> mockRepository = new CategoryManager(context);
@@ -158,7 +158,7 @@ namespace Webservices.Test
         public void Delete_ShouldWork()
         {
             // Arrange
-            DbContextOptions options = new MockDBHandler().CategoryWithThreeMember().build();
+            DbContextOptions<RepositoryContext> options = new MockDBHandler().CategoryWithThreeMember().build();
 
             using (var context = new RepositoryContext(options))
             {

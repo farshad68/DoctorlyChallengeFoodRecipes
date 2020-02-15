@@ -6,11 +6,13 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Webservices.Models;
 using Webservices.Models.Repository;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Webservices.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(AuthenticationSchemes = "Bearer")]
     public class CategoryController : ControllerBase
     {
         private readonly IDataRepository<Category> _dataRepository;
