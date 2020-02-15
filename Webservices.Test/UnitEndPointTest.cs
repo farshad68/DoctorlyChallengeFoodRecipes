@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using NSubstitute;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Web.Http;
 using System.Web.Http.Results;
@@ -26,7 +27,7 @@ namespace Webservices.Test
             Unit tempUnit = new Unit()
             {
                 IsValid = true,
-                Name = "TestCat"
+                Name = "TestUnit"
             };
 
             // Act
@@ -35,7 +36,7 @@ namespace Webservices.Test
 
             // Assert  
             Assert.NotNull(createdResult);
-            Assert.Equal("TestCat", ((Unit)createdResult.Value).Name);
+            Assert.Equal("TestUnit", ((Unit)createdResult.Value).Name);
             Assert.Equal(0, ((Unit)createdResult.Value).ID);
 
         }
@@ -46,11 +47,12 @@ namespace Webservices.Test
             // Arrange
             IDataRepository<Unit> mockRepository = Substitute.For<IDataRepository<Unit>>();
             UnitController unitCont = new UnitController(mockRepository);
+            FilterModel fm = new FilterModel();
             // Act
-            var okResult = unitCont.Get();
+            var okResult = unitCont.Get(fm);
 
             // Assert
-            Assert.IsType<OkObjectResult>(okResult);
+            Assert.IsType<ActionResult<PagedCollectionResponse<Unit>>>(okResult);
         }
 
         [Fact]
@@ -64,13 +66,14 @@ namespace Webservices.Test
             {
                 IDataRepository<Unit> mockRepository = new UnitManager(context);
                 UnitController unitCont = new UnitController(mockRepository);
+                FilterModel fm = new FilterModel();
                 //Act
-                var okResult = unitCont.Get() as OkObjectResult;
+
+                var okResult = unitCont.Get(fm) as ActionResult<PagedCollectionResponse<Unit>>;
 
                 // Assert  
-
-                var items = Assert.IsType<List<Unit>>(okResult.Value);
-                Assert.Equal(3, items.Count);
+                var retObj = Assert.IsType<ActionResult<PagedCollectionResponse<Unit>>>(okResult);
+                Assert.Equal(3, retObj.Value.Items.ToList().Count);
             }
 
         }
@@ -83,16 +86,16 @@ namespace Webservices.Test
             {
                 IDataRepository<Unit> mockRepository = new UnitManager(context);
                 UnitController unitCont = new UnitController(mockRepository);
+                FilterModel fm = new FilterModel();
                 //Act
-                Unit newCat = new Unit() { IsValid = false, Name = "Changed" };
-                var putResult = unitCont.Put(2, newCat) as OkObjectResult;
-                var okResult = unitCont.Get() as OkObjectResult;
+                Unit newUnit = new Unit() { IsValid = false, Name = "Changed" };
+                var putResult = unitCont.Put(2, newUnit) as OkObjectResult;
+                var okResult = unitCont.Get(fm);
                 // Assert  
-
-                var items = Assert.IsType<List<Unit>>(okResult.Value);
-                Assert.Equal(3, items.Count);
-                Assert.False(items[1].IsValid);
-                Assert.Equal("Changed", items[1].Name);
+                var retObj = Assert.IsType<ActionResult<PagedCollectionResponse<Unit>>>(okResult);
+                Assert.Equal(3, retObj.Value.Items.ToList().Count);
+                Assert.False(retObj.Value.Items.ToList()[1].IsValid);
+                Assert.Equal("Changed", retObj.Value.Items.ToList()[1].Name);
 
             }
 
@@ -105,8 +108,8 @@ namespace Webservices.Test
             IDataRepository<Unit> mockRepository = Substitute.For<IDataRepository<Unit>>();
             UnitController unitCont = new UnitController(mockRepository);
             // Act
-            Unit newCat = new Unit() { IsValid = false, Name = "Changed" };
-            var notFoundResult = unitCont.Put(68, newCat);
+            Unit newUnit = new Unit() { IsValid = false, Name = "Changed" };
+            var notFoundResult = unitCont.Put(68, newUnit);
 
             // Assert
             Assert.IsType<Microsoft.AspNetCore.Mvc.NotFoundObjectResult>(notFoundResult);
@@ -120,8 +123,8 @@ namespace Webservices.Test
             IDataRepository<Unit> mockRepository = Substitute.For<IDataRepository<Unit>>();
             UnitController unitCont = new UnitController(mockRepository);
             // Act
-            Unit newCat = null;
-            var badRequest = unitCont.Put(68, newCat);
+            Unit newUnit = null;
+            var badRequest = unitCont.Put(68, newUnit);
 
             // Assert
             Assert.IsType<Microsoft.AspNetCore.Mvc.BadRequestObjectResult>(badRequest);
@@ -163,15 +166,15 @@ namespace Webservices.Test
             {
                 IDataRepository<Unit> mockRepository = new UnitManager(context);
                 UnitController unitCont = new UnitController(mockRepository);
+                FilterModel fm = new FilterModel();
                 //Act                
                 var putResult = unitCont.Delete(2) as OkObjectResult;
-                var okResult = unitCont.Get() as OkObjectResult;
-                // Assert  
-
-                var items = Assert.IsType<List<Unit>>(okResult.Value);
-                Assert.Equal(2, items.Count);
-                Assert.Equal("Unit1", items[0].Name);
-                Assert.Equal("Unit3", items[1].Name);
+                var okResult = unitCont.Get(fm);
+                // Assert 
+                var retObj = Assert.IsType<ActionResult<PagedCollectionResponse<Unit>>>(okResult);                                 
+                Assert.Equal(2, retObj.Value.Items.ToList().Count);
+                Assert.Equal("Unit1", retObj.Value.Items.ToList()[0].Name);
+                Assert.Equal("Unit3", retObj.Value.Items.ToList()[1].Name);
             }
 
         }

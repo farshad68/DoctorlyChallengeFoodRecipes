@@ -4,7 +4,7 @@
         <name>Webservices</name>
     </assembly>
     <members>
-        <member name="M:Webservices.Controllers.CategoryController.Get">
+        <member name="M:Webservices.Controllers.CategoryController.Get(Webservices.Models.FilterModel)">
             <summary>
             Get API Value
             </summary>

@@ -1,8 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Moq;
 using NSubstitute;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Web.Http;
 using System.Web.Http.Results;
@@ -16,7 +19,7 @@ namespace Webservices.Test
 {
     public class CategoryEndPoinTest
     {
-         
+
         [Fact]
         public void Add_ValidObjectPassed_ReturnedResponseHasCreatedItem()
         {
@@ -47,12 +50,16 @@ namespace Webservices.Test
             // Arrange
             IDataRepository<Category> mockRepository = Substitute.For<IDataRepository<Category>>();
             CategoryController categoryCont = new CategoryController(mockRepository);
+            FilterModel fm = new FilterModel();
             // Act
-            var okResult = categoryCont.Get();
+            var okResult = categoryCont.Get(fm);
 
             // Assert
-            Assert.IsType<OkObjectResult>(okResult);
+            Assert.IsType<ActionResult<PagedCollectionResponse<Category>>>(okResult);
         }
+
+    
+
 
         [Fact]
         public void Add_ValidObject_Then_Get_Should_bring_Something()
@@ -65,13 +72,13 @@ namespace Webservices.Test
             {
                 IDataRepository<Category> mockRepository = new CategoryManager(context);
                 CategoryController categoryCont = new CategoryController(mockRepository);
+                FilterModel fm = new FilterModel();
                 //Act
-                var okResult = categoryCont.Get() as OkObjectResult;
-                
-                // Assert  
+                var okResult = categoryCont.Get(fm) as ActionResult<PagedCollectionResponse<Category>>;
 
-                var items = Assert.IsType<List<Category>>(okResult.Value);
-                Assert.Equal(3, items.Count);                
+                // Assert  
+                var retObj = Assert.IsType<ActionResult<PagedCollectionResponse<Category>>>(okResult);                
+                Assert.Equal(3, retObj.Value.Items.ToList().Count);                
             }
 
         }
@@ -87,13 +94,13 @@ namespace Webservices.Test
                 //Act
                 Category newCat = new Category() { IsValid = false, Name = "Changed" };
                 var putResult = categoryCont.Put(2,newCat) as OkObjectResult;
-                var okResult = categoryCont.Get() as OkObjectResult;
+                FilterModel fm = new FilterModel();
+                var okResult = categoryCont.Get(fm) ;
                 // Assert  
-
-                var items = Assert.IsType<List<Category>>(okResult.Value);
-                Assert.Equal(3, items.Count);
-                Assert.False(items[1].IsValid);
-                Assert.Equal("Changed", items[1].Name);
+                var retObj = Assert.IsType<ActionResult<PagedCollectionResponse<Category>>>(okResult);               
+                Assert.Equal(3, retObj.Value.Items.ToList().Count);
+                Assert.False(retObj.Value.Items.ToList()[1].IsValid);
+                Assert.Equal("Changed", retObj.Value.Items.ToList()[1].Name);
 
             }
 
@@ -164,15 +171,15 @@ namespace Webservices.Test
             {
                 IDataRepository<Category> mockRepository = new CategoryManager(context);
                 CategoryController categoryCont = new CategoryController(mockRepository);
+                FilterModel fm = new FilterModel();
                 //Act                
-                var putResult = categoryCont.Delete(2) as OkObjectResult;
-                var okResult = categoryCont.Get() as OkObjectResult;
-                // Assert  
-
-                var items = Assert.IsType<List<Category>>(okResult.Value);
-                Assert.Equal(2, items.Count);                
-                Assert.Equal("cat1", items[0].Name);
-                Assert.Equal("cat3", items[1].Name);
+                var putResult = categoryCont.Delete(2) as OkObjectResult;                
+                var okResult = categoryCont.Get(fm);
+                var retObj = Assert.IsType<ActionResult<PagedCollectionResponse<Category>>>(okResult);
+                // Assert                  
+                Assert.Equal(2, retObj.Value.Items.ToList().Count);                
+                Assert.Equal("cat1", retObj.Value.Items.ToList()[0].Name);
+                Assert.Equal("cat3", retObj.Value.Items.ToList()[1].Name);
             }
 
         }

@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using NSubstitute;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Web.Http;
 using System.Web.Http.Results;
@@ -25,7 +26,7 @@ namespace Webservices.Test
             Country tempCountry = new Country()
             {
                 IsValid = true,
-                Name = "TestCat"
+                Name = "TestCountry"
             };
 
             // Act
@@ -34,7 +35,7 @@ namespace Webservices.Test
 
             // Assert  
             Assert.NotNull(createdResult);
-            Assert.Equal("TestCat", ((Country)createdResult.Value).Name);
+            Assert.Equal("TestCountry", ((Country)createdResult.Value).Name);
             Assert.Equal(0, ((Country)createdResult.Value).ID);
 
         }
@@ -45,11 +46,13 @@ namespace Webservices.Test
             // Arrange
             IDataRepository<Country> mockRepository = Substitute.For<IDataRepository<Country>>();
             CountryController countryCont = new CountryController(mockRepository);
+            FilterModel fm = new FilterModel();
             // Act
-            var okResult = countryCont.Get();
+
+            var okResult = countryCont.Get(fm);
 
             // Assert
-            Assert.IsType<OkObjectResult>(okResult);
+            Assert.IsType<ActionResult<PagedCollectionResponse<Country>>>(okResult);
         }
 
         [Fact]
@@ -63,13 +66,14 @@ namespace Webservices.Test
             {
                 IDataRepository<Country> mockRepository = new CountryManager(context);
                 CountryController countryCont = new CountryController(mockRepository);
+                FilterModel fm = new FilterModel();
                 //Act
-                var okResult = countryCont.Get() as OkObjectResult;
+
+                var okResult = countryCont.Get(fm) as ActionResult<PagedCollectionResponse<Country>>;
 
                 // Assert  
-
-                var items = Assert.IsType<List<Country>>(okResult.Value);
-                Assert.Equal(3, items.Count);
+                var retObj = Assert.IsType<ActionResult<PagedCollectionResponse<Country>>>(okResult);
+                Assert.Equal(3, retObj.Value.Items.ToList().Count);
             }
 
         }
@@ -82,16 +86,16 @@ namespace Webservices.Test
             {
                 IDataRepository<Country> mockRepository = new CountryManager(context);
                 CountryController countryCont = new CountryController(mockRepository);
+                FilterModel fm = new FilterModel();
                 //Act
-                Country newCat = new Country() { IsValid = false, Name = "Changed" };
-                var putResult = countryCont.Put(2, newCat) as OkObjectResult;
-                var okResult = countryCont.Get() as OkObjectResult;
+                Country newCountry = new Country() { IsValid = false, Name = "Changed" };
+                var putResult = countryCont.Put(2, newCountry) as OkObjectResult;
+                var okResult = countryCont.Get(fm);
                 // Assert  
-
-                var items = Assert.IsType<List<Country>>(okResult.Value);
-                Assert.Equal(3, items.Count);
-                Assert.False(items[1].IsValid);
-                Assert.Equal("Changed", items[1].Name);
+                var retObj = Assert.IsType<ActionResult<PagedCollectionResponse<Country>>>(okResult);
+                Assert.Equal(3, retObj.Value.Items.ToList().Count);
+                Assert.False(retObj.Value.Items.ToList()[1].IsValid);
+                Assert.Equal("Changed", retObj.Value.Items.ToList()[1].Name);
 
             }
 
@@ -104,8 +108,8 @@ namespace Webservices.Test
             IDataRepository<Country> mockRepository = Substitute.For<IDataRepository<Country>>();
             CountryController countryCont = new CountryController(mockRepository);
             // Act
-            Country newCat = new Country() { IsValid = false, Name = "Changed" };
-            var notFoundResult = countryCont.Put(68, newCat);
+            Country newCountry = new Country() { IsValid = false, Name = "Changed" };
+            var notFoundResult = countryCont.Put(68, newCountry);
 
             // Assert
             Assert.IsType<Microsoft.AspNetCore.Mvc.NotFoundObjectResult>(notFoundResult);
@@ -119,8 +123,8 @@ namespace Webservices.Test
             IDataRepository<Country> mockRepository = Substitute.For<IDataRepository<Country>>();
             CountryController countryCont = new CountryController(mockRepository);
             // Act
-            Country newCat = null;
-            var badRequest = countryCont.Put(68, newCat);
+            Country newCountry = null;
+            var badRequest = countryCont.Put(68, newCountry);
 
             // Assert
             Assert.IsType<Microsoft.AspNetCore.Mvc.BadRequestObjectResult>(badRequest);
@@ -162,15 +166,15 @@ namespace Webservices.Test
             {
                 IDataRepository<Country> mockRepository = new CountryManager(context);
                 CountryController countryCont = new CountryController(mockRepository);
+                FilterModel fm = new FilterModel();
                 //Act                
                 var putResult = countryCont.Delete(2) as OkObjectResult;
-                var okResult = countryCont.Get() as OkObjectResult;
-                // Assert  
-
-                var items = Assert.IsType<List<Country>>(okResult.Value);
-                Assert.Equal(2, items.Count);
-                Assert.Equal("Country1", items[0].Name);
-                Assert.Equal("Country3", items[1].Name);
+                var okResult = countryCont.Get(fm);
+                var retObj = Assert.IsType<ActionResult<PagedCollectionResponse<Country>>>(okResult);
+                // Assert                  
+                Assert.Equal(2, retObj.Value.Items.ToList().Count);
+                Assert.Equal("Country1", retObj.Value.Items.ToList()[0].Name);
+                Assert.Equal("Country3", retObj.Value.Items.ToList()[1].Name);
             }
 
         }

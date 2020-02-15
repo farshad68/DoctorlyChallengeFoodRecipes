@@ -22,10 +22,35 @@ namespace Webservices.Controllers
         }
         // GET: api/Unit
         [HttpGet]
-        public IActionResult Get()
+        public ActionResult<PagedCollectionResponse<Unit>> Get([FromQuery] FilterModel filter)
         {
-            IEnumerable<Unit> categories = _dataRepository.GetAll();
-            return Ok(categories);
+            IEnumerable<Unit> unit = _dataRepository.GetAll();
+            //Filtering logic  
+            Func<FilterModel, IEnumerable<Unit>> filterData = (filterModel) =>
+            {
+                return unit.Where(p => p.Name.StartsWith(filterModel.Term ?? String.Empty, StringComparison.InvariantCultureIgnoreCase))
+                .Skip((filterModel.Page - 1) * filter.Limit)
+                .Take(filterModel.Limit);
+            };
+
+            //Get the data for the current page  
+            var result = new PagedCollectionResponse<Unit>();
+            result.Items = filterData(filter);
+
+            //Get next page URL string  
+            FilterModel nextFilter = filter.Clone() as FilterModel;
+            nextFilter.Page += 1;
+            String nextUrl = filterData(nextFilter).Count() <= 0 ? null : this.Url.Action("Get", null, nextFilter, Request.Scheme);
+
+            //Get previous page URL string  
+            FilterModel previousFilter = filter.Clone() as FilterModel;
+            previousFilter.Page -= 1;
+            String previousUrl = previousFilter.Page <= 0 ? null : this.Url.Action("Get", null, previousFilter, Request.Scheme);
+
+            result.NextPage = !String.IsNullOrWhiteSpace(nextUrl) ? new Uri(nextUrl) : null;
+            result.PreviousPage = !String.IsNullOrWhiteSpace(previousUrl) ? new Uri(previousUrl) : null;
+
+            return result;
         }
         // GET: api/Unit/5
         [HttpGet("{id}", Name = "GetUnit")]

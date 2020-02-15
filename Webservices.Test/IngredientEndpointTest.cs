@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using NSubstitute;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Web.Http;
 using System.Web.Http.Results;
@@ -26,7 +27,7 @@ namespace Webservices.Test
             Ingredient tempIngredient = new Ingredient()
             {
                 IsValid = true,
-                Name = "TestCat"
+                Name = "TestIngredient"
             };
 
             // Act
@@ -35,7 +36,7 @@ namespace Webservices.Test
 
             // Assert  
             Assert.NotNull(createdResult);
-            Assert.Equal("TestCat", ((Ingredient)createdResult.Value).Name);
+            Assert.Equal("TestIngredient", ((Ingredient)createdResult.Value).Name);
             Assert.Equal(0, ((Ingredient)createdResult.Value).ID);
 
         }
@@ -46,11 +47,12 @@ namespace Webservices.Test
             // Arrange
             IDataRepository<Ingredient> mockRepository = Substitute.For<IDataRepository<Ingredient>>();
             IngredientController ingredientCont = new IngredientController(mockRepository);
+            FilterModel fm = new FilterModel();
             // Act
-            var okResult = ingredientCont.Get();
+            var okResult = ingredientCont.Get(fm);
 
             // Assert
-            Assert.IsType<OkObjectResult>(okResult);
+            Assert.IsType<ActionResult<PagedCollectionResponse<Ingredient>>>(okResult);
         }
 
         [Fact]
@@ -64,13 +66,14 @@ namespace Webservices.Test
             {
                 IDataRepository<Ingredient> mockRepository = new IngredientManager(context);
                 IngredientController ingredientCont = new IngredientController(mockRepository);
+                FilterModel fm = new FilterModel();
                 //Act
-                var okResult = ingredientCont.Get() as OkObjectResult;
+
+                var okResult = ingredientCont.Get(fm) as ActionResult<PagedCollectionResponse<Ingredient>>;
 
                 // Assert  
-
-                var items = Assert.IsType<List<Ingredient>>(okResult.Value);
-                Assert.Equal(3, items.Count);
+                var retObj = Assert.IsType<ActionResult<PagedCollectionResponse<Ingredient>>>(okResult);
+                Assert.Equal(3, retObj.Value.Items.ToList().Count);
             }
 
         }
@@ -83,16 +86,16 @@ namespace Webservices.Test
             {
                 IDataRepository<Ingredient> mockRepository = new IngredientManager(context);
                 IngredientController ingredientCont = new IngredientController(mockRepository);
+                FilterModel fm = new FilterModel();
                 //Act
-                Ingredient newCat = new Ingredient() { IsValid = false, Name = "Changed" };
-                var putResult = ingredientCont.Put(2, newCat) as OkObjectResult;
-                var okResult = ingredientCont.Get() as OkObjectResult;
+                Ingredient newIngredient = new Ingredient() { IsValid = false, Name = "Changed" };
+                var putResult = ingredientCont.Put(2, newIngredient) as OkObjectResult;
+                var okResult = ingredientCont.Get(fm);
                 // Assert  
-
-                var items = Assert.IsType<List<Ingredient>>(okResult.Value);
-                Assert.Equal(3, items.Count);
-                Assert.False(items[1].IsValid);
-                Assert.Equal("Changed", items[1].Name);
+                var retObj = Assert.IsType<ActionResult<PagedCollectionResponse<Ingredient>>>(okResult);
+                Assert.Equal(3, retObj.Value.Items.ToList().Count);
+                Assert.False(retObj.Value.Items.ToList()[1].IsValid);
+                Assert.Equal("Changed", retObj.Value.Items.ToList()[1].Name);
 
             }
 
@@ -105,8 +108,8 @@ namespace Webservices.Test
             IDataRepository<Ingredient> mockRepository = Substitute.For<IDataRepository<Ingredient>>();
             IngredientController ingredientCont = new IngredientController(mockRepository);
             // Act
-            Ingredient newCat = new Ingredient() { IsValid = false, Name = "Changed" };
-            var notFoundResult = ingredientCont.Put(68, newCat);
+            Ingredient newIngredient = new Ingredient() { IsValid = false, Name = "Changed" };
+            var notFoundResult = ingredientCont.Put(68, newIngredient);
 
             // Assert
             Assert.IsType<Microsoft.AspNetCore.Mvc.NotFoundObjectResult>(notFoundResult);
@@ -120,8 +123,8 @@ namespace Webservices.Test
             IDataRepository<Ingredient> mockRepository = Substitute.For<IDataRepository<Ingredient>>();
             IngredientController ingredientCont = new IngredientController(mockRepository);
             // Act
-            Ingredient newCat = null;
-            var badRequest = ingredientCont.Put(68, newCat);
+            Ingredient newIngredient = null;
+            var badRequest = ingredientCont.Put(68, newIngredient);
 
             // Assert
             Assert.IsType<Microsoft.AspNetCore.Mvc.BadRequestObjectResult>(badRequest);
@@ -163,15 +166,16 @@ namespace Webservices.Test
             {
                 IDataRepository<Ingredient> mockRepository = new IngredientManager(context);
                 IngredientController ingredientCont = new IngredientController(mockRepository);
+                FilterModel fm = new FilterModel();
                 //Act                
                 var putResult = ingredientCont.Delete(2) as OkObjectResult;
-                var okResult = ingredientCont.Get() as OkObjectResult;
-                // Assert  
+                var okResult = ingredientCont.Get(fm);
+                var retObj = Assert.IsType<ActionResult<PagedCollectionResponse<Ingredient>>>(okResult);
+                // Assert                  
+                Assert.Equal(2, retObj.Value.Items.ToList().Count);
 
-                var items = Assert.IsType<List<Ingredient>>(okResult.Value);
-                Assert.Equal(2, items.Count);
-                Assert.Equal("Ing1", items[0].Name);
-                Assert.Equal("Ing3", items[1].Name);
+                Assert.Equal("Ing1", retObj.Value.Items.ToList()[0].Name);
+                Assert.Equal("Ing3", retObj.Value.Items.ToList()[1].Name);
             }
 
         }
