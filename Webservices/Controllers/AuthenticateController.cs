@@ -32,11 +32,20 @@ namespace Webservices.Controllers
             if (user != null && await userManager.CheckPasswordAsync(user, model.Password))
             {
 
-                var authClaims = new[]
+                var authClaims =new ClaimsIdentity( new[]
                 {
                     new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
-                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
-                };
+                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                    new Claim(ClaimTypes.NameIdentifier, user.UserName)
+                });
+
+                
+                var roles =  userManager.GetRolesAsync(user).Result;
+                if (roles.Count > 0)
+                {
+                    foreach (var role in roles) { authClaims.AddClaim(new Claim(ClaimTypes.Role, role)); }
+                }
+
 
                 var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("ThisISaLongandSecureSecureKeyDoYouBeliveThat"));
 
@@ -44,7 +53,7 @@ namespace Webservices.Controllers
                     issuer: "http://doctorly.de",
                     audience: "http://doctorly.de",
                     expires: DateTime.Now.AddHours(3),
-                    claims: authClaims,
+                    claims: authClaims.Claims,
                     signingCredentials: new Microsoft.IdentityModel.Tokens.SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
                     );
 
