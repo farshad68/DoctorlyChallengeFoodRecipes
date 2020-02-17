@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Webservices.Migrations
 {
-    public partial class init : Migration
+    public partial class init1 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -52,7 +52,7 @@ namespace Webservices.Migrations
                 {
                     ID = table.Column<long>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(nullable: true),
+                    Name = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: true),
                     IsValid = table.Column<bool>(nullable: false)
                 },
                 constraints: table =>
@@ -66,7 +66,7 @@ namespace Webservices.Migrations
                 {
                     ID = table.Column<long>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(nullable: true),
+                    Name = table.Column<string>(type: "varchar(30)", maxLength: 30, nullable: true),
                     IsValid = table.Column<bool>(nullable: false)
                 },
                 constraints: table =>
@@ -80,7 +80,7 @@ namespace Webservices.Migrations
                 {
                     ID = table.Column<long>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(nullable: true),
+                    Name = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: true),
                     IsValid = table.Column<bool>(nullable: false)
                 },
                 constraints: table =>
@@ -94,7 +94,7 @@ namespace Webservices.Migrations
                 {
                     ID = table.Column<long>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(nullable: true),
+                    Name = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: true),
                     IsValid = table.Column<bool>(nullable: false)
                 },
                 constraints: table =>
@@ -215,7 +215,7 @@ namespace Webservices.Migrations
                     ID = table.Column<long>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Token = table.Column<Guid>(nullable: false),
-                    Name = table.Column<string>(nullable: true),
+                    Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
                     Description = table.Column<string>(nullable: true),
                     Direction = table.Column<string>(nullable: true),
                     CountryID = table.Column<long>(nullable: false),
@@ -322,6 +322,27 @@ namespace Webservices.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Category_Name",
+                table: "Category",
+                column: "Name",
+                unique: true,
+                filter: "[Name] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Country_Name",
+                table: "Country",
+                column: "Name",
+                unique: true,
+                filter: "[Name] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Ingredient_Name",
+                table: "Ingredient",
+                column: "Name",
+                unique: true,
+                filter: "[Name] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Recipe_CategoryID",
                 table: "Recipe",
                 column: "CategoryID");
@@ -345,6 +366,13 @@ namespace Webservices.Migrations
                 name: "IX_RecipeIngredient_UnitID",
                 table: "RecipeIngredient",
                 column: "UnitID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Unit_Name",
+                table: "Unit",
+                column: "Name",
+                unique: true,
+                filter: "[Name] IS NOT NULL");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

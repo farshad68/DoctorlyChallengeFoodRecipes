@@ -12,5 +12,6 @@ namespace Webservices.Models.Repository
         void Add(TEntity entity);
         void Update(TEntity dbEntity, TEntity entity);
         void Delete(TEntity entity);
+        bool Exist(TEntity entity);
     }
 }

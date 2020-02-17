@@ -71,17 +71,26 @@ namespace Webservices.Controllers
         [HttpPost]
         public IActionResult Post([FromBody] Country country)
         {
-            if (country == null)
+            try
             {
-                return BadRequest("country is null.");
-            }
+                if (country == null)
+                {
+                    return BadRequest("country is null.");
+                }
 
-            _dataRepository.Add(country);
-            return CreatedAtRoute(
-                  "GetCountry",
-                  new { Id = country.ID },
-                  country);
-        }
+                _dataRepository.Add(country);
+                return CreatedAtRoute(
+                      "GetCountry",
+                      new { Id = country.ID },
+                      country);
+            }catch(Exception ex)
+            {
+                if (ex.InnerException.Message.StartsWith("Cannot insert duplicate key row in object"))
+                    return BadRequest("Can not Insert two equal Country");
+                else
+                    return BadRequest(ex.Message);
+    }
+}
 
         // PUT: api/Country/5
         [HttpPut("{id}")]

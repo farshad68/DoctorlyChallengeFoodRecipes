@@ -8,8 +8,7 @@ namespace Webservices.ViewModel
 {
     public class RecipeViewModel
     {
-        public long ID { get; set; }
-        public Guid Token { get; set; }
+        public long ID { get; set; }        
         public string Name { get; set; }
         public string Description { get; set; }
         public string Direction { get; set; }
@@ -26,24 +25,23 @@ namespace Webservices.ViewModel
 
         public override bool Equals(object value)
         {
-            RecipeViewModel secondRVM = value as RecipeViewModel;
+            RecipeViewModel that = value as RecipeViewModel;
             
-            return (secondRVM != null)
-                && (ID == secondRVM.ID)
-                && (Token == secondRVM.Token)
-                && (Name == secondRVM.Name)
-                && (Description == secondRVM.Description)
-                && (Direction == secondRVM.Direction)
-                && (CountryID == secondRVM.CountryID)
-                && (CountryName == secondRVM.CountryName)
-                && (Year == secondRVM.Year)
-                && (PreparationTime == secondRVM.PreparationTime)
-                && (NumberOfServing == secondRVM.NumberOfServing)
-                && (CaloriesPerServing == secondRVM.CaloriesPerServing)
-                && (IsCompleted == secondRVM.IsCompleted)
-                && (CategoryID == secondRVM.CategoryID)
-                && (CategoryName == secondRVM.CategoryName)
-                && Ingredients.EqualsOtherList(secondRVM.Ingredients)
+            return (that != null)
+                && (this.ID == that.ID)
+                && (this.Name == that.Name)
+                && (this.Description == that.Description)
+                && (this.Direction == that.Direction)
+                && (this.CountryID == that.CountryID)
+                && (this.CountryName == that.CountryName)
+                && (this.Year == that.Year)
+                && (this.PreparationTime == that.PreparationTime)
+                && (this.NumberOfServing == that.NumberOfServing)
+                && (this.CaloriesPerServing == that.CaloriesPerServing)
+                && (this.IsCompleted == that.IsCompleted)
+                && (this.CategoryID == that.CategoryID)
+                && (this.CategoryName == that.CategoryName)
+                && this.Ingredients.EqualsOtherList(that.Ingredients)
                 ;
         }
     }

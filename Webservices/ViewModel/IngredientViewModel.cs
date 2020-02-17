@@ -15,14 +15,14 @@ namespace Webservices.ViewModel
      
         public override bool Equals(object value)
         {
-            IngredientViewModel secondIVM = value as IngredientViewModel;
+            IngredientViewModel that = value as IngredientViewModel;
 
-            return (secondIVM != null)
-                && (IngredientID == secondIVM.IngredientID)
-                && (IngredientName == secondIVM.IngredientName)
-                && (Quantity == secondIVM.Quantity)
-                && (UnitID == secondIVM.UnitID)
-                && (UnitName == secondIVM.UnitName);
+            return (that != null)
+                && (this.IngredientID == that.IngredientID)
+                && (this.IngredientName == that.IngredientName)
+                && (this.Quantity == that.Quantity)
+                && (this.UnitID == that.UnitID)
+                && (this.UnitName == that.UnitName);
         }
     }
 }

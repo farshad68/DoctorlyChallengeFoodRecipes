@@ -10,8 +10,21 @@ namespace Webservices.Models
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public long ID { get; set; }
+        [MaxLength(30)]
+        [Column(TypeName = "nvarchar(30)")]
+        [MinLength(2)]
         public string Name { get; set; }
         public bool IsValid { get; set; }
         public ICollection<RecipeIngredient> Recipes { get; set; }
+        public override bool Equals(object value)
+        {
+            Ingredient that = value as Ingredient;
+
+            return (that != null)
+                && (this.ID == that.ID)
+                && (this.Name == that.Name)
+                && (this.IsValid == that.IsValid)
+                ;
+        }
     }
 }

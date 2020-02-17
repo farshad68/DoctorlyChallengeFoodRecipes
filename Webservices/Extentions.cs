@@ -23,5 +23,9 @@ namespace Webservices
                 thisList.Count != theOtherList.Count) return false;
             return !thisList.Where((t, i) => !t.Equals(theOtherList[i])).Any();
         }
+        public static bool EqualsOtherCollection<T>(this ICollection<T> thisCollection, ICollection<T> theOtherCollection)
+        {
+            return EqualsOtherList<T>(thisCollection.ToList(), theOtherCollection.ToList());
+        }
     }
 }

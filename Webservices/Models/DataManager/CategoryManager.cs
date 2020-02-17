@@ -45,5 +45,12 @@ namespace Webservices.Models.DataManager
 
             _repositoryContext.SaveChanges();
         }
+        public bool Exist(Category entity)
+        {
+            var q = from p in _repositoryContext.Category
+                    where _repositoryContext.Category.Any(gi => gi.Equals(p))
+                    select p;
+            return q.Count() > 0;
+        }
     }
 }

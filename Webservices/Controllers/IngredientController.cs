@@ -70,6 +70,7 @@ namespace Webservices.Controllers
         [HttpPost]
         public IActionResult Post([FromBody] Ingredient ingredient)
         {
+            try { 
             if (ingredient == null)
             {
                 return BadRequest("ingredient is null.");
@@ -80,6 +81,14 @@ namespace Webservices.Controllers
                   "GetIngredient",
                   new { Id = ingredient.ID },
                   ingredient);
+            }
+            catch (Exception ex)
+            {
+                if (ex.InnerException.Message.StartsWith("Cannot insert duplicate key row in object"))
+                    return BadRequest("Can not Insert two equal Ingredint");
+                else
+                    return BadRequest(ex.Message);
+            }
         }
 
         // PUT: api/Ingredient/5

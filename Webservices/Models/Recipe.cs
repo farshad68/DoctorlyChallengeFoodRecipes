@@ -11,9 +11,13 @@ namespace Webservices.Models
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public long ID { get; set; }
-        public Guid Token { get; set; }
+
+        [MaxLength(100)]
+        [Column(TypeName = "nvarchar(100)")]
+        [MinLength(3)]
         public string Name { get; set; }
         public string Description { get; set; }
+        [MinLength(10)]
         public string Direction { get; set; }
         public long CountryID { get; set; }
         public Country Country { get; set; }
@@ -25,28 +29,47 @@ namespace Webservices.Models
         public bool IsCompleted { get; set; }
         public long CategoryID { get; set; }
         public Category Category { get; set; }
-
         public string UserId { get; set; }
         public ApplicationUser User { get; set; }
 
         public override bool Equals(object value)
         {
-            Recipe secondRecipe = value as Recipe;
+            Recipe that = value as Recipe;
 
-            return (secondRecipe != null)
-                && (ID == secondRecipe.ID)
-                && (Token == secondRecipe.Token)
-                && (Name == secondRecipe.Name)
-                && (Description == secondRecipe.Description)
-                && (Direction == secondRecipe.Direction)
-                && (CountryID == secondRecipe.CountryID)
-                && (Year == secondRecipe.Year)
-                && (PreparationTime == secondRecipe.PreparationTime)
-                && (NumberOfServing == secondRecipe.NumberOfServing)
-                && (CaloriesPerServing == secondRecipe.CaloriesPerServing)
-                && (IsCompleted == secondRecipe.IsCompleted)
-                && (CategoryID == secondRecipe.CategoryID)
-                && (Ingredients.Count == secondRecipe.Ingredients.Count);
+            return (that != null)
+                && (this.ID == that.ID)
+                && (this.Name == that.Name)
+                && (this.Description == that.Description)
+                && (this.Direction == that.Direction)
+                && (this.CountryID == that.CountryID)
+                && (this.Year == that.Year)
+                && (this.PreparationTime == that.PreparationTime)
+                && (this.NumberOfServing == that.NumberOfServing)
+                && (this.CaloriesPerServing == that.CaloriesPerServing)
+                && (this.IsCompleted == that.IsCompleted)
+                && (this.CategoryID == that.CategoryID)
+                && (this.Ingredients.Count == that.Ingredients.Count)
+                && (this.Ingredients.EqualsOtherCollection(that.Ingredients));
+        }
+        public  bool EqualsAndIDdoesntmatter(object value)
+        {
+            Recipe that = value as Recipe;
+
+            return (that != null)
+
+                && (this.Name == that.Name)
+                && (this.Description == that.Description)
+                && (this.Direction == that.Direction)
+                && (this.CountryID == that.CountryID)
+                && (this.Year == that.Year)
+                && (this.PreparationTime == that.PreparationTime)
+                && (this.NumberOfServing == that.NumberOfServing)
+                && (this.CaloriesPerServing == that.CaloriesPerServing)
+                && (this.IsCompleted == that.IsCompleted)
+                && (this.CategoryID == that.CategoryID)
+                && (this.Ingredients.Count == that.Ingredients.Count)
+                && (this.Ingredients.EqualsOtherCollection(that.Ingredients));
         }
     }
 }
+

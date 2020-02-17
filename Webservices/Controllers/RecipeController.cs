@@ -12,6 +12,7 @@ using Webservices.ViewModel;
 using Microsoft.AspNetCore.Authorization;
 using Webservices.Data;
 using Microsoft.AspNetCore.Identity;
+using System.Security.Claims;
 
 namespace Webservices.Controllers
 {
@@ -111,7 +112,7 @@ namespace Webservices.Controllers
             {
                 return BadRequest("recipe is null.");
             }
-            recipe.Token = Guid.NewGuid();
+            //recipe.Token = Guid.NewGuid();
             Recipe recipeDest = _custumMapper.Map(recipe);
             //Recipe recipeDest = _mapper.Map<RecipeViewModel, Recipe  >(recipe);
             var name = _userManager.GetUserId(User);
@@ -119,7 +120,13 @@ namespace Webservices.Controllers
             
             recipeDest.User = user;
             recipeDest.UserId = user.Id;
-            _dataRepository.Add(recipeDest);
+
+            if (_dataRepository.Exist(recipeDest))
+            {
+               return BadRequest("This recipe exist.");
+            }
+
+            _dataRepository.Add(recipeDest);            
             recipe.ID = recipeDest.ID;
             return CreatedAtRoute(
                   "GetRecipe",
@@ -136,10 +143,27 @@ namespace Webservices.Controllers
             }
 
             Recipe recipeToUpdate = _dataRepository.Get(id);
+                        
             if (recipeToUpdate == null)
             {
                 return NotFound("The Recipe record couldn't be found.");
             }
+
+            var roles = ((ClaimsIdentity)User.Identity).Claims
+                .Where(c => c.Type == ClaimTypes.Role)
+                .Select(c => c.Value);
+
+            if (!roles.Contains("Editor"))
+            {
+                var name = _userManager.GetUserId(User);
+                var user = _userManager.FindByNameAsync(name).Result;
+
+                if (recipeToUpdate.User != user)
+                {
+                    return BadRequest("Recipe is not belong to this user.");
+                }
+            }
+            
             Recipe recipe = _custumMapper.Map(recipeVM);
             _dataRepository.Update(recipeToUpdate, recipe);
             return NoContent();

@@ -20,8 +20,7 @@ namespace Webservices.Mapper
             r.IsCompleted = rvm.IsCompleted;
             r.Name = rvm.Name;
             r.NumberOfServing = rvm.NumberOfServing;
-            r.PreparationTime = rvm.PreparationTime;
-            r.Token = rvm.Token;
+            r.PreparationTime = rvm.PreparationTime;            
             r.Year = rvm.Year;
             r.Direction = rvm.Direction;
             r.Description = rvm.Description;
@@ -60,8 +59,7 @@ namespace Webservices.Mapper
             rvm.IsCompleted = r.IsCompleted;
             rvm.Name = r.Name;
             rvm.NumberOfServing = r.NumberOfServing;
-            rvm.PreparationTime = r.PreparationTime;
-            rvm.Token = r.Token;
+            rvm.PreparationTime = r.PreparationTime;            
             rvm.Year = r.Year;
             rvm.Direction = r.Direction;
             rvm.Description = r.Description;

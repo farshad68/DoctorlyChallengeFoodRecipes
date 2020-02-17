@@ -74,6 +74,7 @@ namespace Webservices.Controllers
         [HttpPost]
         public IActionResult Post([FromBody] Category category)
         {
+            try { 
             if (category == null)
             {
                 return BadRequest("category is null.");
@@ -84,6 +85,14 @@ namespace Webservices.Controllers
                   "GetCategory",
                   new { Id = category.ID },
                   category);
+            }
+            catch (Exception ex)
+            {
+                if (ex.InnerException.Message.StartsWith("Cannot insert duplicate key row in object"))
+                    return BadRequest("Can not Insert two equal Category");
+                else
+                    return BadRequest(ex.Message);
+            }
         }
 
         // PUT: api/Category/5

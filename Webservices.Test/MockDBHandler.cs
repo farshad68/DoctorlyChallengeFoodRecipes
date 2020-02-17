@@ -95,8 +95,7 @@ namespace Webservices.Test
                     IsCompleted = false,
                     Name = "Nam 1",
                     NumberOfServing = 1,
-                    PreparationTime = 6000,
-                    Token = Guid.NewGuid(),
+                    PreparationTime = 6000,                    
                     Year = 2015,
                     Ingredients = recIng1
                 };
@@ -128,8 +127,7 @@ namespace Webservices.Test
             acctual.IsCompleted = true;
             acctual.Name = "N";
             acctual.NumberOfServing = 3;
-            acctual.PreparationTime = 8000;
-            acctual.Token = Guid.NewGuid();
+            acctual.PreparationTime = 8000;            
             acctual.Year = 2019;
 
             IngredientViewModel ivm1 = new IngredientViewModel()

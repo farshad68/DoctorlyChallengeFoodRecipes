@@ -58,11 +58,40 @@ namespace Webservices.Models.DataManager
             dbEntity.IsCompleted = entity.IsCompleted;
             dbEntity.Name = entity.Name;
             dbEntity.NumberOfServing = entity.NumberOfServing;
-            dbEntity.PreparationTime = entity.PreparationTime;
-            dbEntity.Token = entity.Token;
+            dbEntity.PreparationTime = entity.PreparationTime;            
             dbEntity.Year = entity.Year;
 
             _repositoryContext.SaveChanges();
+        }
+
+        public bool Exist(Recipe entity)
+        {
+            var q = _repositoryContext.Recipe.Where(
+                T => T.CaloriesPerServing == entity.CaloriesPerServing
+            && T.CategoryID == entity.CategoryID
+            && T.CountryID == entity.CountryID
+            && T.Description == entity.Description
+            && T.Direction == entity.Direction           
+            && T.IsCompleted == entity.IsCompleted
+            && T.Name == entity.Name
+            && T.NumberOfServing == entity.NumberOfServing
+            && T.PreparationTime == entity.PreparationTime
+            && T.UserId == entity.UserId
+            && T.Year == entity.Year
+            ).ToList();
+
+            if (q.Count == 0) return false;
+            List<Ingredient> entityIngredient = entity.Ingredients.Select(P => P.Ingredient).ToList();
+            foreach (var item in q) // find that Ingradients are the sam or not
+            {
+                List<Ingredient> Ing1 = _repositoryContext.RecipeIngredient.Where(T => T.RecipeID == item.ID).Select(P=>P.Ingredient).ToList();
+                if (Ing1.EqualsOtherList(entityIngredient))
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
     }
 }

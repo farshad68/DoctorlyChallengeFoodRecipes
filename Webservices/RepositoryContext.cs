@@ -42,6 +42,22 @@ namespace Webservices
                 .HasOne(T => T.Recipe)
                 .WithMany(X => X.Ingredients)
                 .HasForeignKey(Y => Y.RecipeID);
+
+            builder.Entity<Unit>()
+            .HasIndex(u => u.Name)
+            .IsUnique();
+
+            builder.Entity<Ingredient>()
+            .HasIndex(i => i.Name)
+            .IsUnique();
+
+            builder.Entity<Country>()
+            .HasIndex(c => c.Name)
+            .IsUnique();
+
+            builder.Entity<Category>()
+            .HasIndex(ca => ca.Name)
+            .IsUnique();
         }
     }
 }

@@ -70,16 +70,25 @@ namespace Webservices.Controllers
         [HttpPost]
         public IActionResult Post([FromBody] Unit unit)
         {
-            if (unit == null)
+            try
             {
-                return BadRequest("unit is null.");
-            }
+                if (unit == null)
+                {
+                    return BadRequest("unit is null.");
+                }
 
-            _dataRepository.Add(unit);
-            return CreatedAtRoute(
-                  "GetUnit",
-                  new { Id = unit.ID },
-                  unit);
+                _dataRepository.Add(unit);
+                return CreatedAtRoute(
+                      "GetUnit",
+                      new { Id = unit.ID },
+                      unit);
+            }catch(Exception ex)
+            {
+                if (ex.InnerException.Message.StartsWith("Cannot insert duplicate key row in object"))
+                    return BadRequest("Can not Insert two equal Unit");
+                else
+                    return BadRequest(ex.Message);
+            }
         }
 
         // PUT: api/Unit/5
