@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Webservices.Data;
 
 namespace Webservices.Models
 {
@@ -24,6 +25,9 @@ namespace Webservices.Models
         public bool IsCompleted { get; set; }
         public long CategoryID { get; set; }
         public Category Category { get; set; }
+
+        public string UserId { get; set; }
+        public ApplicationUser User { get; set; }
 
         public override bool Equals(object value)
         {

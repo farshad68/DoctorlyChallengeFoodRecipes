@@ -10,6 +10,8 @@ using Webservices.Models;
 using Webservices.Models.Repository;
 using Webservices.ViewModel;
 using Microsoft.AspNetCore.Authorization;
+using Webservices.Data;
+using Microsoft.AspNetCore.Identity;
 
 namespace Webservices.Controllers
 {
@@ -22,15 +24,17 @@ namespace Webservices.Controllers
         private readonly IMapper _mapper;
         private readonly IDataRepository<Recipe> _dataRepository;
         private readonly ICustomMapper _custumMapper;
-        public RecipeController(IDataRepository<Recipe> dataRepository, IMapper mapper, ICustomMapper custumMapper)
+        UserManager<ApplicationUser> _userManager;
+        public RecipeController(IDataRepository<Recipe> dataRepository, IMapper mapper, ICustomMapper custumMapper, UserManager<ApplicationUser> userManager)
         {
             _dataRepository = dataRepository;
             _mapper = mapper;
             _custumMapper = custumMapper;
+            _userManager = userManager;
         }
         // GET: api/Recipe
         [HttpGet]
-        public ActionResult<PagedCollectionResponse<Recipe>> Get([FromQuery] FilterModel filter)        
+        public ActionResult<PagedCollectionResponse<RecipeViewModel>> Get([FromQuery] FilterModel filter)        
         {
             IEnumerable<Recipe> recipe = _dataRepository.GetAll();
             List<RecipeViewModel> recipDes = new List<RecipeViewModel>();
@@ -43,14 +47,14 @@ namespace Webservices.Controllers
                 .Take(filterModel.Limit);
             };
 
-            foreach (var item in recipe)
+            foreach (var item in filterData(filter))
             {
                 recipDes.Add(_custumMapper.Map(item));
             }
 
             //Get the data for the current page  
-            var result = new PagedCollectionResponse<Recipe>();
-            result.Items = filterData(filter);
+            var result = new PagedCollectionResponse<RecipeViewModel>();
+            result.Items = recipDes; 
 
             //Get next page URL string  
             FilterModel nextFilter = filter.Clone() as FilterModel;
@@ -110,8 +114,11 @@ namespace Webservices.Controllers
             recipe.Token = Guid.NewGuid();
             Recipe recipeDest = _custumMapper.Map(recipe);
             //Recipe recipeDest = _mapper.Map<RecipeViewModel, Recipe  >(recipe);
+            var name = _userManager.GetUserId(User);
+            var user =  _userManager.FindByNameAsync(name).Result;
             
-            
+            recipeDest.User = user;
+            recipeDest.UserId = user.Id;
             _dataRepository.Add(recipeDest);
             recipe.ID = recipeDest.ID;
             return CreatedAtRoute(

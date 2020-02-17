@@ -1,12 +1,18 @@
 ﻿using AutoMapper;
+using Microsoft.AspNet.Identity;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Moq;
 using NSubstitute;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using Webservices.Controllers;
+using Webservices.Data;
 using Webservices.Mapper;
 using Webservices.Models;
 using Webservices.Models.DataManager;
@@ -20,7 +26,7 @@ namespace Webservices.Test
     {
         private  IMapper _mapper;
         //private  ICustomMapper _customMapper;
-
+        Microsoft.AspNetCore.Identity.UserManager<ApplicationUser> _usermanager;
 
 
         public RecipeEndPointTest()
@@ -30,8 +36,24 @@ namespace Webservices.Test
             {
                 mc.AddProfile(new MappingProfile());
             });
-            _mapper = mappingConfig.CreateMapper();            
-        }
+            _mapper = mappingConfig.CreateMapper();
+
+            ApplicationUser appuser = new ApplicationUser()
+            {
+                UserName = "test@email.com",
+                Id = "123"
+            };
+
+            var store = new Mock<Microsoft.AspNetCore.Identity.IUserStore<ApplicationUser>>();
+            store.Setup(x => x.FindByIdAsync("123", CancellationToken.None))
+                .Returns
+                (
+                Task.FromResult<ApplicationUser>(appuser));
+
+                   }
+
+
+
 
         [Fact]
         public void Add_ValidObjectPassed_ReturnedResponseHasCreatedItem()
@@ -42,8 +64,10 @@ namespace Webservices.Test
             {
                 ICustomMapper _customMapper = new CustomMapper(context);
                 IDataRepository<Recipe> mockRepository = new RecipeManager(context);
-                 
-                RecipeController recipecontroller = new RecipeController(mockRepository,_mapper,_customMapper);
+
+                AuthenticateController aut =new AuthenticateController(_usermanager);
+
+                RecipeController recipecontroller = new RecipeController(mockRepository,_mapper,_customMapper, _usermanager);
                 
                 // Act
                 IActionResult actionResult = recipecontroller.Post(new MockDBHandler().buildMockRecipeView());
@@ -67,14 +91,14 @@ namespace Webservices.Test
                 ICustomMapper _customMapper = new CustomMapper(context);
                 // Arrange
                 IDataRepository<Recipe> mockRepository = Substitute.For<IDataRepository<Recipe>>();
-                RecipeController recipeCont = new RecipeController(mockRepository, _mapper, _customMapper);
+                RecipeController recipeCont = new RecipeController(mockRepository, _mapper, _customMapper, _usermanager);
                 FilterModel fm = new FilterModel();
                 // Act
 
                 var okResult = recipeCont.Get(fm);
 
                 // Assert
-                Assert.IsType<ActionResult<PagedCollectionResponse<Recipe>>>(okResult);
+                Assert.IsType<ActionResult<PagedCollectionResponse<RecipeViewModel>>>(okResult);
             }
         }
 
@@ -88,7 +112,7 @@ namespace Webservices.Test
                 ICustomMapper _customMapper = new CustomMapper(context);
                 IDataRepository<Recipe> mockRepository = new RecipeManager(context);
 
-                RecipeController recipecontroller = new RecipeController(mockRepository, _mapper, _customMapper);
+                RecipeController recipecontroller = new RecipeController(mockRepository, _mapper, _customMapper, _usermanager);
                 FilterModel fm = new FilterModel();
                 //Act
                 recipecontroller.Post(new MockDBHandler().buildMockRecipeView());
@@ -96,7 +120,7 @@ namespace Webservices.Test
 
                 // Assert  
 
-                var retObj = Assert.IsType<ActionResult<PagedCollectionResponse<Recipe>>>(okResult);
+                var retObj = Assert.IsType<ActionResult<PagedCollectionResponse<RecipeViewModel>>>(okResult);
                 Assert.Equal(2, retObj.Value.Items.ToList().Count);
             }
 
@@ -112,7 +136,7 @@ namespace Webservices.Test
                 ICustomMapper _customMapper = new CustomMapper(context);
                 IDataRepository<Recipe> mockRepository = new RecipeManager(context);
 
-                RecipeController recipecontroller = new RecipeController(mockRepository, _mapper, _customMapper);
+                RecipeController recipecontroller = new RecipeController(mockRepository, _mapper, _customMapper, _usermanager);
                 //Act
                 var forEdit = new MockDBHandler().buildMockRecipeView();
                 forEdit.ID = 1; // Because In mock it is something else and in equalation assert result to false
@@ -141,7 +165,7 @@ namespace Webservices.Test
                 ICustomMapper _customMapper = new CustomMapper(context);
                 IDataRepository<Recipe> mockRepository = new RecipeManager(context);
 
-                RecipeController recipecontroller = new RecipeController(mockRepository, _mapper, _customMapper);
+                RecipeController recipecontroller = new RecipeController(mockRepository, _mapper, _customMapper, _usermanager);
                 //Act
                 var forEdit = new MockDBHandler().buildMockRecipeView();
                 forEdit.ID = 1; // Because In mock it is something else and in equalation assert result to false
@@ -164,7 +188,7 @@ namespace Webservices.Test
                 ICustomMapper _customMapper = new CustomMapper(context);
                 IDataRepository<Recipe> mockRepository = new RecipeManager(context);
 
-                RecipeController recipecontroller = new RecipeController(mockRepository, _mapper, _customMapper);
+                RecipeController recipecontroller = new RecipeController(mockRepository, _mapper, _customMapper, _usermanager);
                 //Act
 
 
@@ -187,7 +211,7 @@ namespace Webservices.Test
                 ICustomMapper _customMapper = new CustomMapper(context);
                 IDataRepository<Recipe> mockRepository = new RecipeManager(context);
 
-                RecipeController recipecontroller = new RecipeController(mockRepository, _mapper, _customMapper);
+                RecipeController recipecontroller = new RecipeController(mockRepository, _mapper, _customMapper, _usermanager);
                 //Act                
                 var notFoundResult = recipecontroller.Get(68) ;
 
@@ -206,7 +230,7 @@ namespace Webservices.Test
                 ICustomMapper _customMapper = new CustomMapper(context);
                 IDataRepository<Recipe> mockRepository = new RecipeManager(context);
 
-                RecipeController recipecontroller = new RecipeController(mockRepository, _mapper, _customMapper);
+                RecipeController recipecontroller = new RecipeController(mockRepository, _mapper, _customMapper, _usermanager);
                 //Act                
                 var notFoundResult = recipecontroller.Delete(68);
 
@@ -226,15 +250,15 @@ namespace Webservices.Test
                 ICustomMapper _customMapper = new CustomMapper(context);
                 IDataRepository<Recipe> mockRepository = new RecipeManager(context);
 
-                RecipeController recipecontroller = new RecipeController(mockRepository, _mapper, _customMapper);
+                RecipeController recipecontroller = new RecipeController(mockRepository, _mapper, _customMapper, _usermanager);
                 FilterModel fm = new FilterModel();
                 //Act                
                 var okResultBeforDelete = recipecontroller.Get(fm);               
-                var itemsBeforeDelete  = Assert.IsType<ActionResult<PagedCollectionResponse<Recipe>>>(okResultBeforDelete);
+                var itemsBeforeDelete  = Assert.IsType<ActionResult<PagedCollectionResponse<RecipeViewModel>>>(okResultBeforDelete);
                 Assert.Equal(1, itemsBeforeDelete.Value.Items.ToList().Count);
                 var notFoundResult = recipecontroller.Delete(1);
                 var okResultAfterDelete = recipecontroller.Get(fm);
-                var itemsAfterDelete = Assert.IsType<ActionResult<PagedCollectionResponse<Recipe>>>(okResultAfterDelete);
+                var itemsAfterDelete = Assert.IsType<ActionResult<PagedCollectionResponse<RecipeViewModel>>>(okResultAfterDelete);
                 Assert.Equal(0, itemsAfterDelete.Value.Items.ToList().Count);                
             
                                         

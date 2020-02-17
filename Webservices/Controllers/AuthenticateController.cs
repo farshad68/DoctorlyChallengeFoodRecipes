@@ -35,8 +35,9 @@ namespace Webservices.Controllers
                 var authClaims =new ClaimsIdentity( new[]
                 {
                     new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
-                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                    new Claim(ClaimTypes.NameIdentifier, user.UserName)
+                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),                    
+                    new Claim(ClaimTypes.Name, user.UserName),
+                    new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                 });
 
                 
