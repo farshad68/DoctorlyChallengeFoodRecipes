@@ -21,12 +21,13 @@ namespace Webservices.Models
         public override bool Equals(object value)
         {
             Category that = value as Category;
-
+            
             return (that != null)
                 && (this.ID == that.ID)
                 && (this.Name == that.Name)
                 && (this.IsValid == that.IsValid)
                 ;
         }
+        
     }
 }

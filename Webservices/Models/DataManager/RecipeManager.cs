@@ -31,8 +31,8 @@ namespace Webservices.Models.DataManager
             var returnvalue = _repositoryContext.Recipe
                  .FirstOrDefault(e => e.ID == id);
             if(returnvalue!=null)
-            returnvalue.Ingredients = _repositoryContext.RecipeIngredient.Include(x => x.Ingredient).Include(y => y.Unit).Where(T => T.RecipeID == id).ToList();
-            
+            returnvalue.Ingredients = _repositoryContext.RecipeIngredient.Include(x => x.Ingredient).Include(y => y.Unit).Where(T => T.RecipeID == id).ToList();            
+                 
             return returnvalue;
         }
 
@@ -48,18 +48,18 @@ namespace Webservices.Models.DataManager
         }
 
         public void Update(Recipe dbEntity, Recipe entity)
-        {
-            dbEntity.CaloriesPerServing = entity.CaloriesPerServing;
-            dbEntity.Category = entity.Category;
-            dbEntity.Country = entity.Country;
-            dbEntity.Description = entity.Description;
-            dbEntity.Direction = entity.Direction;
-            dbEntity.Ingredients = entity.Ingredients;
-            dbEntity.IsCompleted = entity.IsCompleted;
-            dbEntity.Name = entity.Name;
+        {            
+            dbEntity.CaloriesPerServing = entity.CaloriesPerServing;            
+                dbEntity.Category = entity.Category;            
+                dbEntity.Country = entity.Country;            
+                dbEntity.Description = entity.Description;
+                dbEntity.Direction = entity.Direction;            
+                dbEntity.Ingredients = entity.Ingredients;
+            dbEntity.IsCompleted = entity.IsCompleted;            
+                dbEntity.Name = entity.Name;
             dbEntity.NumberOfServing = entity.NumberOfServing;
             dbEntity.PreparationTime = entity.PreparationTime;            
-            dbEntity.Year = entity.Year;
+            dbEntity.Year = entity.Year;            
 
             _repositoryContext.SaveChanges();
         }

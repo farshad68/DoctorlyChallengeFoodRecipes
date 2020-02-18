@@ -25,8 +25,10 @@ namespace Webservices
         public DbSet<Recipe> Recipe { get; set; }
         public DbSet<RecipeIngredient> RecipeIngredient { get; set; }
         public DbSet<Unit> Unit { get; set; }
+        public DbSet<RecipeTokenLookUP> RecipeTokenLookUP { get; set; }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
+            optionsBuilder.EnableSensitiveDataLogging(true);
         }
         protected override void OnModelCreating(ModelBuilder builder)
         {

@@ -51,7 +51,9 @@ namespace Webservices
             services.AddScoped<IDataRepository<Ingredient>, IngredientManager>();
             services.AddScoped<IDataRepository<Recipe>, RecipeManager>();            
             services.AddScoped<IDataRepository<Unit>, UnitManager>();
+            services.AddScoped<IDataRepositoryTokenis<RecipeTokenLookUP>, RecipeTokenManager>();
             services.AddScoped<ICustomMapper, CustomMapper>();
+            
             services.AddCors(options =>
             {
                 options.AddPolicy("AllowAllHeaders",

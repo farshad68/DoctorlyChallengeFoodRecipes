@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Webservices;
 
 namespace Webservices.Migrations
 {
     [DbContext(typeof(RepositoryContext))]
-    partial class RepositoryContextModelSnapshot : ModelSnapshot
+    [Migration("20200217151352_addTokenLookup")]
+    partial class addTokenLookup
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -366,7 +368,10 @@ namespace Webservices.Migrations
                         .HasColumnType("bigint")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<long>("RecipeID")
+                    b.Property<bool>("RecipeID")
+                        .HasColumnType("bit");
+
+                    b.Property<long?>("RecipeID1")
                         .HasColumnType("bigint");
 
                     b.Property<Guid>("Token")
@@ -374,7 +379,7 @@ namespace Webservices.Migrations
 
                     b.HasKey("ID");
 
-                    b.HasIndex("RecipeID");
+                    b.HasIndex("RecipeID1");
 
                     b.ToTable("RecipeTokenLookUP");
                 });
@@ -497,9 +502,7 @@ namespace Webservices.Migrations
                 {
                     b.HasOne("Webservices.Models.Recipe", "Recipe")
                         .WithMany()
-                        .HasForeignKey("RecipeID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("RecipeID1");
                 });
 #pragma warning restore 612, 618
         }
